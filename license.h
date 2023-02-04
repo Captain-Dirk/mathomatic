@@ -4,7 +4,7 @@
 
 /* The following is the Mathomatic license notice, stored in a string. */
 /* It is displayed by the "help copyright" command. */
-char	*license_string =
+char const license_string[] =
 "    Mathomatic computer algebra system\n"
 "    Copyright (C) 1987-2012 George Gesslein II\n\n"
 

@@ -19,7 +19,7 @@
  * Maximum simplification of all expressions is not possible unless everything is generalized.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -36,7 +36,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 #include "includes.h"
@@ -72,9 +72,9 @@ static int find_highest_count(token_type *p1, int n1, token_type *p2, int n2, lo
  * Compare function for qsort(3).
  */
 static int
-vcmp(p1, p2)
-sort_type	*p1, *p2;
+poly_vcmp (void const *v1, void const *v2)
 {
+	sort_type const *p1 = (sort_type const *)v1, *p2 = (sort_type const *)v2;
 	if (p2->count == p1->count) {
 		if (p1->v < p2->v)
 			return -1;
@@ -92,11 +92,12 @@ sort_type	*p1, *p2;
  * as long as it doesn't contain the variable v.
  */
 int
-poly_in_v_sub(p1, n, v, allow_divides)
-token_type	*p1;		/* expression pointer */
-int		n;		/* expression length */
-long		v;		/* Mathomatic variable */
-int		allow_divides;	/* if true, allow division by variable */
+poly_in_v_sub (
+    token_type *p1,	/* expression pointer */
+    int n,		/* expression length */
+    long v,		/* Mathomatic variable */
+    int allow_divides	/* if true, allow division by variable */
+)
 {
 	int	i, k;
 	int	level, vlevel;
@@ -147,11 +148,12 @@ int		allow_divides;	/* if true, allow division by variable */
  * The passed expression should be fully unfactored, for a proper determination.
  */
 int
-poly_in_v(p1, n, v, allow_divides)
-token_type	*p1;		/* expression pointer */
-int		n;		/* expression length */
-long		v;		/* Mathomatic variable */
-int		allow_divides;	/* allow variable to be right of a divide (negative exponents) as a polynomial term */
+poly_in_v (
+    token_type *p1,	/* expression pointer */
+    int n,		/* expression length */
+    long v,		/* Mathomatic variable */
+    int allow_divides	/* allow variable to be right of a divide (negative exponents) as a polynomial term */
+)
 {
 	int	i, j;
 
@@ -182,19 +184,17 @@ int		allow_divides;	/* allow variable to be right of a divide (negative exponent
  * Return true if equation side was modified (factored).
  */
 int
-poly_factor(equation, np, do_repeat)
-token_type	*equation;	/* pointer to the beginning of equation side */
-int		*np;		/* pointer to length of equation side */
-int		do_repeat;	/* factor repeated factors flag */
+poly_factor (
+    token_type *equation,	/* pointer to the beginning of equation side */
+    int *np,			/* pointer to length of equation side */
+    int do_repeat		/* factor repeated factors flag */
+)
 {
 	return pf_recurse(equation, np, 0, 1, do_repeat);
 }
 
 static int
-pf_recurse(equation, np, loc, level, do_repeat)
-token_type	*equation;
-int		*np, loc, level;
-int		do_repeat;
+pf_recurse (token_type *equation, int *np, int loc, int level, int do_repeat)
 {
 	int	modified = false;
 	int	i;
@@ -235,13 +235,14 @@ int		do_repeat;
  * Return true if equation side was modified (factored).
  */
 static int
-pf_sub(equation, np, loc, len, level, do_repeat)
-token_type	*equation;	/* equation side holding the possible polynomial to factor */
-int		*np,		/* pointer to length of equation side */
-		loc,		/* index of start of polynomial in equation side */
-		len;		/* length of polynomial */
-int		level;		/* level of additive operators in polynomial */
-int		do_repeat;	/* factor repeated factors flag */
+pf_sub (
+    token_type *equation,	/* equation side holding the possible polynomial to factor */
+    int *np,			/* pointer to length of equation side */
+    int loc,			/* index of start of polynomial in equation side */
+    int len,			/* length of polynomial */
+    int level,			/* level of additive operators in polynomial */
+    int do_repeat		/* factor repeated factors flag */
+)
 {
 	token_type	*p1;
 	int		modified = false, symbolic_modified = false;
@@ -507,9 +508,7 @@ skip_factor:
 }
 
 static int
-save_factors(equation, np, loc1, len, level)
-token_type	*equation;
-int		*np, loc1, len, level;
+save_factors (token_type *equation, int *np, int loc1, int len, int level)
 {
 	int	i, j;
 
@@ -619,8 +618,9 @@ remove_factors(void)
  * If a negative number, switching operands won't work either.
  */
 static int
-do_gcd(vp)
-long		*vp;	/* polynomial base variable pointer */
+do_gcd (
+    long *vp	/* polynomial base variable pointer */
+)
 {
 	int	i;
 	int	count;
@@ -660,12 +660,13 @@ long		*vp;	/* polynomial base variable pointer */
  * The results are unfactored and simplified.
  */
 int
-poly_gcd(larger, llen, smaller, slen, v)
-token_type	*larger;	/* larger polynomial */
-int		llen;		/* larger polynomial length */
-token_type	*smaller;	/* smaller polynomial */
-int		slen;		/* smaller polynomial length */
-long		v;		/* polynomial base variable */
+poly_gcd (
+    token_type *larger,		/* larger polynomial */
+    int llen,			/* larger polynomial length */
+    token_type *smaller,	/* smaller polynomial */
+    int slen,			/* smaller polynomial length */
+    long v			/* polynomial base variable */
+)
 {
 	int		count;
 
@@ -726,13 +727,14 @@ long		v;		/* polynomial base variable */
  * Return smaller/GCD in trhs[].
  */
 int
-poly2_gcd(larger, llen, smaller, slen, v, require_additive)
-token_type	*larger;	/* larger polynomial */
-int		llen;		/* larger polynomial length */
-token_type	*smaller;	/* smaller polynomial */
-int		slen;		/* smaller polynomial length */
-long		v;		/* polynomial base variable */
-int		require_additive;	/* require the GCD to contain addition or subtraction */
+poly2_gcd (
+    token_type *larger,		/* larger polynomial */
+    int llen,			/* larger polynomial length */
+    token_type *smaller,	/* smaller polynomial */
+    int slen,			/* smaller polynomial length */
+    long v,			/* polynomial base variable */
+    int require_additive	/* require the GCD to contain addition or subtraction */
+)
 {
 	int		i;
 	int		count;
@@ -829,11 +831,10 @@ int		require_additive;	/* require the GCD to contain addition or subtraction */
  * Integer variable names start with "integer".
  */
 int
-is_integer_var(v)
-long	v;
+is_integer_var (long v)
 {
 	char	*cp;
-	int	(*strncmpfunc)();
+	int	(*strncmpfunc) (char const *, char const *, size_t);
 
 	if (case_sensitive_flag) {
 		strncmpfunc = strncmp;
@@ -857,9 +858,10 @@ long	v;
  * Should first be unfactored with uf_pplus() for a proper determination.
  */
 int
-is_integer_expr(p1, n)
-token_type	*p1;	/* expression pointer */
-int		n;	/* length of expression */
+is_integer_expr (
+    token_type *p1,	/* expression pointer */
+    int n		/* length of expression */
+)
 {
 	int	i;
 	long	v;
@@ -897,17 +899,16 @@ int		n;	/* length of expression */
  * Return true if equation side was modified.
  */
 int
-mod_simp(equation, np)
-token_type	*equation;	/* pointer to the beginning of equation side to simplify */
-int		*np;		/* pointer to length of the equation side */
+mod_simp (
+    token_type *equation,	/* pointer to the beginning of equation side to simplify */
+    int *np			/* pointer to length of the equation side */
+)
 {
 	return mod_recurse(equation, np, 0, 1);
 }
 
 static int
-mod_recurse(equation, np, loc, level)
-token_type	*equation;
-int		*np, loc, level;
+mod_recurse (token_type *equation, int *np, int loc, int level)
 {
 	int	modified = false;
 	int	i, j, k;
@@ -1069,17 +1070,13 @@ int		*np, loc, level;
  * and denominator by the GCD.
  */
 int
-poly_gcd_simp(equation, np)
-token_type	*equation;
-int		*np;
+poly_gcd_simp (token_type *equation, int *np)
 {
 	return polydiv_recurse(equation, np, 0, 1);
 }
 
 static int
-polydiv_recurse(equation, np, loc, level)
-token_type	*equation;
-int		*np, loc, level;
+polydiv_recurse (token_type *equation, int *np, int loc, int level)
 {
 	int	modified = false;
 	int	i, j, k;
@@ -1179,11 +1176,12 @@ store_code:
  * Return true if expression was simplified.
  */
 int
-div_remainder(equation, np, poly_flag, quick_flag)
-token_type	*equation;
-int		*np;
-int		poly_flag;	/* if true, try polynomial division first, then smart division */
-int		quick_flag;	/* if true, keep algebraic fractions simpler */
+div_remainder (
+    token_type *equation,
+    int *np,
+    int poly_flag,	/* if true, try polynomial division first, then smart division */
+    int quick_flag	/* if true, keep algebraic fractions simpler */
+)
 {
 	int	rv = false;
 
@@ -1198,9 +1196,7 @@ int		quick_flag;	/* if true, keep algebraic fractions simpler */
 }
 
 static int
-pdiv_recurse(equation, np, loc, level, code)
-token_type	*equation;
-int		*np, loc, level, code;
+pdiv_recurse (token_type *equation, int *np, int loc, int level, int code)
 {
 	int	modified = false;
 	int	i, j, k;
@@ -1381,12 +1377,13 @@ next_thingy:
  * If *vp is 0, automatically select the best polynomial base variable and return it in *vp.
  */
 int
-poly_div(d1, len1, d2, len2, vp)
-token_type	*d1;		/* pointer to dividend */
-int		len1;		/* length of dividend */
-token_type	*d2;		/* pointer to divisor */
-int		len2;		/* length of divisor */
-long		*vp;		/* pointer to polynomial base variable */
+poly_div (
+    token_type *d1,	/* pointer to dividend */
+    int len1,		/* length of dividend */
+    token_type *d2,	/* pointer to divisor */
+    int len2,		/* length of divisor */
+    long *vp		/* pointer to polynomial base variable */
+)
 {
 	int		i;
 	int		rv;
@@ -1417,12 +1414,7 @@ long		*vp;		/* pointer to polynomial base variable */
  * generalized, polynomial long division algorithm.
  */
 static int
-poly_div_sub(d1, len1, d2, len2, vp)
-token_type	*d1;
-int		len1;
-token_type	*d2;
-int		len2;
-long		*vp;
+poly_div_sub (token_type *d1, int len1, token_type *d2, int len2, long *vp)
 {
 	int		i;
 	int		t1, len_t1;
@@ -1615,11 +1607,12 @@ long		*vp;
  * Quotient is returned in tlhs[] and remainder in trhs[].
  */
 int
-smart_div(d1, len1, d2, len2)
-token_type	*d1;		/* pointer to dividend */
-int		len1;		/* length of dividend */
-token_type	*d2;		/* pointer to divisor */
-int		len2;		/* length of divisor */
+smart_div (
+    token_type *d1,	/* pointer to dividend */
+    int len1,		/* length of dividend */
+    token_type *d2,	/* pointer to divisor */
+    int len2		/* length of divisor */
+)
 {
 	int		i, j, k;
 	int		t1, len_t1;
@@ -1853,9 +1846,7 @@ end_div2:
  * minus any constant multiplier.
  */
 int
-basic_size(p1, len)
-token_type	*p1;
-int		len;
+basic_size (token_type *p1, int len)
 {
 	int	i, j;
 	int	level;
@@ -1884,11 +1875,7 @@ int		len;
 }
 
 int
-get_term(p1, n1, count, tp1, lentp1)
-token_type	*p1;
-int		n1;
-int		count;
-int		*tp1, *lentp1;
+get_term (token_type *p1, int n1, int count, int *tp1, int *lentp1)
 {
 	int	i, j;
 	int	no;
@@ -1918,12 +1905,13 @@ int		*tp1, *lentp1;
  * and the number of times it occurs in the dividend is returned.
  */
 static int
-find_highest_count(p1, n1, p2, n2, vp1)
-token_type	*p1;		/* pointer to dividend expression */
-int		n1;		/* length of dividend */
-token_type	*p2;		/* pointer to divisor expression */
-int		n2;		/* length of divisor */
-long		*vp1;		/* variable pointer to return base variable with */
+find_highest_count (
+    token_type *p1,	/* pointer to dividend expression */
+    int n1,		/* length of dividend */
+    token_type *p2,	/* pointer to divisor expression */
+    int n2,		/* length of divisor */
+    long *vp1		/* variable pointer to return base variable with */
+)
 {
 	int		i;
 	int		vc, cnt;
@@ -1958,7 +1946,7 @@ long		*vp1;		/* variable pointer to return base variable with */
 	}
 	if (vc <= 0)
 		return 0;
-	qsort((char *) va, vc, sizeof(*va), vcmp);
+	qsort((char *) va, vc, sizeof(*va), poly_vcmp);
 	for (cv = IMAGINARY + 1; cv > 0; cv--) {
 		for (i = 0; i < vc; i++) {
 			if ((cv > IMAGINARY) ? ((va[i].v & VAR_MASK) <= SIGN) : (va[i].v != cv)) {
@@ -1988,10 +1976,7 @@ long		*vp1;		/* variable pointer to return base variable with */
 #define	VALUE_CNT	3
 
 void
-term_value(dp, p1, n1, loc)
-double		*dp;
-token_type	*p1;
-int		n1, loc;
+term_value (double *dp, token_type *p1, int n1, int loc)
 {
 	int	i, j, k;
 	int	divide_flag = false;
@@ -2065,15 +2050,17 @@ int		n1, loc;
  * then 0 is returned and *vp1 is set to a valid polynomial base variable, if any.
  */
 int
-find_greatest_power(p1, n1, vp1, pp1, tp1, lentp1, dcodep)
-token_type	*p1;		/* pointer to expression */
-int		n1;		/* length of expression */
-long		*vp1;		/* polynomial base variable */
-double		*pp1;		/* returned power of the returned term, which will be the highest power */
-int		*tp1, *lentp1;	/* the returned term index and length */
-int		*dcodep;	/* divide flag pointer indicates if term is a denominator; */
-				/* for example: for x^5 it is false, for 1/x^5 it is true. */
-				/* If equal to 2, set it; if equal to 3, ignore it. */
+find_greatest_power (
+    token_type *p1,	/* pointer to expression */
+    int n1,		/* length of expression */
+    long *vp1,		/* polynomial base variable */
+    double *pp1,	/* returned power of the returned term, which will be the highest power */
+    int *tp1,
+    int *lentp1,	/* the returned term index and length */
+    int *dcodep		/* divide flag pointer indicates if term is a denominator; */
+)
+			/* for example: for x^5 it is false, for 1/x^5 it is true. */
+			/* If equal to 2, set it; if equal to 3, ignore it. */
 {
 	int		i, j, k, ii;
 	double		d;

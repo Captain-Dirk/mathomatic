@@ -3,7 +3,7 @@
  * which is a computer algebra system written in the C programming language.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -20,11 +20,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 /*
- * Output to stderr is only done in this file.  The rest of the Mathomatic code
+ * Output to stderr is only done in this file.	The rest of the Mathomatic code
  * should not output to stderr; error messages should use error() or go to stdout.
  * One reason for this is so that Mathomatic stdout can be redirected or piped,
  * catching all output.
@@ -85,8 +85,7 @@ HANDLE	hOut;
  * Display invocation usage info.
  */
 void
-usage(fp)
-FILE	*fp;
+usage (FILE *fp)
 {
 	fprintf(fp, _("Mathomatic computer algebra system, version %s\n"), VERSION);
 	fprintf(fp, _("Usage: %s [ options ] [ input_files or input ]\n\n"), prog_name);
@@ -110,9 +109,7 @@ FILE	*fp;
 }
 
 int
-main(argc, argv)
-int	argc;
-char	**argv;
+main (int argc, char **argv)
 {
 #if	NO_GETOPT_H	/* if no getopt.h is available */
 	extern char	*optarg;	/* set by getopt(3) */
@@ -422,8 +419,7 @@ main_io_loop(void)
  * Return zero on success, or a non-zero unsettable signal number on error.
  */
 int
-set_signals(time_out_seconds)
-unsigned int	time_out_seconds;
+set_signals (unsigned int time_out_seconds)
 {
 	int	rv = 0;
 
@@ -462,8 +458,7 @@ unsigned int	time_out_seconds;
  * Floating point exceptions are currently ignored.
  */
 void
-fphandler(sig)
-int	sig;
+fphandler (int sig)
 {
 #if	DEBUG
 	warning("Floating point exception.");
@@ -476,8 +471,7 @@ int	sig;
  * If it can't, repeated calls terminate this program.
  */
 void
-inthandler(sig)
-int	sig;
+inthandler (int sig)
 {
 	abort_flag++;
 	switch (abort_flag) {
@@ -501,8 +495,7 @@ int	sig;
  * Alarm signal handler.
  */
 void
-alarmhandler(sig)
-int	sig;
+alarmhandler (int sig)
 {
 	printf(_("\nTimeout, quitting...\n"));
 	exit_program(1);
@@ -513,8 +506,7 @@ int	sig;
  * Signal handler for proper exiting to the operating system.
  */
 void
-exithandler(sig)
-int	sig;
+exithandler (int sig)
 {
 	exit_program(1);
 }
@@ -524,8 +516,7 @@ int	sig;
  * Window resize signal handler.
  */
 void
-resizehandler(sig)
-int	sig;
+resizehandler (int sig)
 {
 	if (screen_columns)
 		get_screen_size();
@@ -536,8 +527,9 @@ int	sig;
  * Properly exit this program and return to the operating system.
  */
 void
-exit_program(exit_value)
-int	exit_value;	/* zero if OK, non-zero indicates error return */
+exit_program (
+    int exit_value	/* zero if OK, non-zero indicates error return */
+)
 {
 	reset_attr();
 	if (html_flag) {
@@ -554,7 +546,7 @@ int	exit_value;	/* zero if OK, non-zero indicates error return */
 #if	VALGRIND
 	printf("Deallocating all Mathomatic allocated memory for valgrind memory leak checking...\n");
 	printf("If you are not using valgrind, please compile without -DVALGRIND.\n");
-        free_mem();     /* Free all known memory buffers to check for memory leaks with something like valgrind(1). */
+	free_mem();	/* Free all known memory buffers to check for memory leaks with something like valgrind(1). */
 #endif
 	exit(exit_value);
 }

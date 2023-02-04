@@ -7,7 +7,7 @@
  * It is heavily tested through extensive use in this computer algebra system.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 #include "includes.h"
@@ -42,8 +42,7 @@ George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
  * Returns 0 on failure, otherwise returns the positive GCD.
  */
 double
-gcd(d1, d2)
-double	d1, d2;
+gcd (double d1, double d2)
 {
 	int	count;
 	double	larger, divisor, remainder1, lower_limit;
@@ -92,8 +91,7 @@ double	d1, d2;
  * Result is not necessarily integer unless both d1 and d2 are integer.
  */
 double
-gcd_verified(d1, d2)
-double	d1, d2;
+gcd_verified (double d1, double d2)
 {
 	double	divisor, d3, d4;
 
@@ -115,8 +113,9 @@ double	d1, d2;
  * Returns the passed floating point double rounded to the nearest integer.
  */
 double
-my_round(d1)
-double	d1;	/* value to round */
+my_round (
+    double d1	/* value to round */
+)
 {
 	if (d1 >= 0.0) {
 		modf(d1 + 0.5, &d1);
@@ -141,10 +140,11 @@ double	d1;	/* value to round */
  * True return indicates d is rational and finite, otherwise d is probably irrational.
  */
 int
-f_to_fraction(d, numeratorp, denominatorp)
-double	d;		/* floating point number to convert */
-double	*numeratorp;	/* returned numerator */
-double	*denominatorp;	/* returned denominator */
+f_to_fraction (
+    double d,			/* floating point number to convert */
+    double *numeratorp,		/* returned numerator */
+    double *denominatorp	/* returned denominator */
+)
 {
 	double	divisor;
 	double	numerator, denominator;
@@ -213,9 +213,10 @@ double	*denominatorp;	/* returned denominator */
  * Returns true if any fractions were created.
  */
 int
-make_fractions(equation, np)
-token_type	*equation;	/* equation side pointer */
-int		*np;		/* pointer to length of equation side */
+make_fractions (
+    token_type *equation,	/* equation side pointer */
+    int *np			/* pointer to length of equation side */
+)
 {
 	switch (fractions_display) {
 	case 2:
@@ -236,9 +237,10 @@ int		*np;		/* pointer to length of equation side */
  * Returns true if any fractions were created.
  */
 int
-make_simple_fractions(equation, np)
-token_type	*equation;	/* equation side pointer */
-int		*np;		/* pointer to length of equation side */
+make_simple_fractions (
+    token_type *equation,	/* equation side pointer */
+    int *np			/* pointer to length of equation side */
+)
 {
 	int	i, j, k;
 	int	level;
@@ -324,9 +326,10 @@ int		*np;		/* pointer to length of equation side */
  * Returns true if any fractions were created.
  */
 int
-make_mixed_fractions(equation, np)
-token_type	*equation;	/* equation side pointer */
-int		*np;		/* pointer to length of equation side */
+make_mixed_fractions (
+    token_type *equation,	/* equation side pointer */
+    int *np			/* pointer to length of equation side */
+)
 {
 	int	i, j, k;
 	int	level;

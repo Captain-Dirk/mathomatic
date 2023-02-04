@@ -2,7 +2,7 @@
  * A standard include file for all math programs written in C.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -19,12 +19,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 #ifndef M_EULER
-#define M_EULER	0.57721566490153286060651209008      /* Euler-Mascheroni constant (from GSL) */
-#endif 
+#define M_EULER	0.57721566490153286060651209008		/* Euler-Mascheroni constant (from GSL) */
+#endif
 #ifndef	M_PI
 #define M_PI	3.14159265358979323846	/* pi */
 #endif

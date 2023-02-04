@@ -166,7 +166,7 @@ char *parse_var2(long *vp, char *cp);
 int display_usage(char *pstr, int i);
 int display_command(int i);
 int display_repeat_command(void);
-int read_examples(char **cpp);
+int read_examples(char const *const *cpp);
 void underline_title(int count);
 int help_cmd(char *cp);
 /* integrate.c */

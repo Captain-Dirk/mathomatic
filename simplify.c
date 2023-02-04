@@ -2,7 +2,7 @@
  * Mathomatic simplifying routines.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 #include "includes.h"
@@ -45,9 +45,10 @@ static int order_recurse(token_type *equation, int *np, int loc, int level);
  * This is the inner-most loop in Mathomatic, make it fast.
  */
 void
-organize(equation, np)
-token_type	*equation;	/* equation side pointer */
-int		*np;		/* pointer to length of equation side */
+organize (
+    token_type *equation,	/* equation side pointer */
+    int *np			/* pointer to length of equation side */
+)
 {
 #if	DEBUG
 	if (equation == NULL || np == NULL) {
@@ -65,9 +66,7 @@ int		*np;		/* pointer to length of equation side */
 }
 
 static inline void
-org_up_level(bp, ep, level, invert)
-token_type	*bp, *ep;
-int		level, invert;
+org_up_level (token_type *bp, token_type *ep, int level, int invert)
 {
 	if (invert) {
 		for (; bp <= ep; bp++) {
@@ -101,10 +100,13 @@ int		level, invert;
  * moving up levels to "level" of parentheses.
  */
 static int
-org_recurse(equation, np, loc, level, elocp)
-token_type	*equation;	/* equation side pointer */
-int		*np;		/* pointer to length of equation side */
-int		loc, level, *elocp;
+org_recurse (
+    token_type *equation,	/* equation side pointer */
+    int *np,			/* pointer to length of equation side */
+    int loc,
+    int level,
+    int *elocp
+)
 {
 	token_type	*p1, *bp, *ep;
 	int		op, sub_op;
@@ -173,9 +175,10 @@ int		loc, level, *elocp;
  * Just does constant simplification.
  */
 void
-elim_loop(equation, np)
-token_type	*equation;	/* pointer to the beginning of equation side to simplify */
-int		*np;		/* pointer to length of equation side */
+elim_loop (
+    token_type *equation,	/* pointer to the beginning of equation side to simplify */
+    int *np			/* pointer to length of equation side */
+)
 {
 	if (abort_flag) {
 		/* Control-C pressed, gracefully return to main prompt and leave unsimplified */
@@ -214,14 +217,15 @@ int		*np;		/* pointer to length of equation side */
  * Configurable high level simplify routine.
  */
 void
-simp_ssub(equation, np, v, d, power_flag, times_flag, fc_level)
-token_type	*equation;	/* pointer to the beginning of equation side to simplify */
-int		*np;		/* pointer to length of equation side */
-long		v;		/* variable to factor, 0L or MATCH_ANY to factor all variables */
-double		d;		/* factor expressions raised to the power of this if v */
-int		power_flag;	/* factor_power() flag */
-int		times_flag;	/* factor_times() flag */
-int		fc_level;	/* factor constants code, passed to factor_constants() */
+simp_ssub (
+    token_type *equation,	/* pointer to the beginning of equation side to simplify */
+    int *np,			/* pointer to length of equation side */
+    long v,			/* variable to factor, 0L or MATCH_ANY to factor all variables */
+    double d,			/* factor expressions raised to the power of this if v */
+    int power_flag,		/* factor_power() flag */
+    int times_flag,		/* factor_times() flag */
+    int fc_level		/* factor constants code, passed to factor_constants() */
+)
 {
 	do {
 		do {
@@ -247,8 +251,9 @@ int		fc_level;	/* factor constants code, passed to factor_constants() */
  * No factoring is done.
  */
 void
-simp_equation(n)
-int	n;	/* equation space number to simplify */
+simp_equation (
+    int n	/* equation space number to simplify */
+)
 {
 	if (empty_equation_space(n))
 		return;
@@ -263,9 +268,10 @@ int	n;	/* equation space number to simplify */
  * Trivial factoring is done.
  */
 void
-mid_simp_side(equation, np)
-token_type	*equation;	/* pointer to the beginning of equation side to simplify */
-int		*np;		/* pointer to length of equation side */
+mid_simp_side (
+    token_type *equation,	/* pointer to the beginning of equation side to simplify */
+    int *np			/* pointer to length of equation side */
+)
 {
 	simp_ssub(equation, np, 0L, 1.0, true, true, 6);
 }
@@ -275,8 +281,9 @@ int		*np;		/* pointer to length of equation side */
  * Trivial factoring is done.
  */
 void
-mid_simp_equation(n)
-int	n;	/* equation space number to simplify */
+mid_simp_equation (
+    int n	/* equation space number to simplify */
+)
 {
 	if (empty_equation_space(n))
 		return;
@@ -290,10 +297,11 @@ int	n;	/* equation space number to simplify */
  * This function is the mid-range simplifier used by the solver.
  */
 void
-simps_side(equation, np, zsolve)
-token_type	*equation;	/* pointer to the beginning of equation side to simplify */
-int		*np;		/* pointer to length of equation side */
-int		zsolve;		/* true for solving for zero */
+simps_side (
+    token_type *equation,	/* pointer to the beginning of equation side to simplify */
+    int *np,			/* pointer to length of equation side */
+    int zsolve			/* true for solving for zero */
+)
 {
 	elim_loop(equation, np);
 	simp_constant_power(equation, np);
@@ -306,10 +314,11 @@ int		zsolve;		/* true for solving for zero */
  * This function is used by the factor command.
  */
 void
-simpv_side(equation, np, v)
-token_type	*equation;	/* pointer to the beginning of equation side to factor */
-int		*np;		/* pointer to length of equation side */
-long		v;		/* variable to factor, 0 for all variables */
+simpv_side (
+    token_type *equation,	/* pointer to the beginning of equation side to factor */
+    int *np,			/* pointer to length of equation side */
+    long v			/* variable to factor, 0 for all variables */
+)
 {
 	simp_ssub(equation, np, v, 0.0, v == 0, true, 6);
 }
@@ -319,9 +328,10 @@ long		v;		/* variable to factor, 0 for all variables */
  * Trivial factoring is done.
  */
 void
-simpv_equation(n, v)
-int	n;	/* equation space number to simplify */
-long	v;	/* Mathomatic variable to factor or 0 */
+simpv_equation (
+    int n,	/* equation space number to simplify */
+    long v	/* Mathomatic variable to factor or 0 */
+)
 {
 	if (empty_equation_space(n))
 		return;
@@ -338,9 +348,10 @@ long	v;	/* Mathomatic variable to factor or 0 */
  * Return true if anything was approximated.
  */
 int
-factor_imaginary(equation, np)
-token_type	*equation;	/* pointer to the beginning of equation side */
-int		*np;		/* pointer to equation side length */
+factor_imaginary (
+    token_type *equation,	/* pointer to the beginning of equation side */
+    int *np			/* pointer to equation side length */
+)
 {
 	int	rv;
 
@@ -357,10 +368,11 @@ int		*np;		/* pointer to equation side length */
  * not in the divisor.
  */
 void
-factorv(equation, np, v)
-token_type	*equation;	/* pointer to the beginning of equation side to factor */
-int		*np;		/* pointer to equation side length */
-long		v;		/* Mathomatic variable to factor */
+factorv (
+    token_type *equation,	/* pointer to the beginning of equation side to factor */
+    int *np,			/* pointer to equation side length */
+    long v			/* Mathomatic variable to factor */
+)
 {
 	do {
 		do {
@@ -374,9 +386,7 @@ long		v;		/* Mathomatic variable to factor */
  * Includes complex number simplification.
  */
 void
-calc_simp(equation, np)
-token_type	*equation;
-int		*np;
+calc_simp (token_type *equation, int *np)
 {
 	approximate_roots = true;
 	subst_constants(equation, np);
@@ -396,9 +406,7 @@ int		*np;
  * Approximate an equation side for the approximate command.
  */
 void
-approximate(equation, np)
-token_type	*equation;
-int		*np;
+approximate (token_type *equation, int *np)
 {
 	if (repeat_flag) {
 		/* do more */
@@ -419,9 +427,7 @@ int		*np;
  * Return true if any imaginary units where substituted.
  */
 int
-simp_i(equation, np)
-token_type	*equation;
-int		*np;
+simp_i (token_type *equation, int *np)
 {
 	int	i;
 	int	level;
@@ -487,9 +493,7 @@ int		*np;
  * Combine all like denominators.
  */
 void
-simp_divide(equation, np)
-token_type	*equation;
-int		*np;
+simp_divide (token_type *equation, int *np)
 {
 	do {
 		do {
@@ -505,11 +509,7 @@ int		*np;
  * For beauty simplifier simpb_side() below.
  */
 void
-simp2_divide(equation, np, v, fc_level)
-token_type	*equation;
-int		*np;
-long		v;
-int		fc_level;
+simp2_divide (token_type *equation, int *np, long v, int fc_level)
 {
 	do {
 		do {
@@ -528,9 +528,9 @@ int		fc_level;
  * Compare function for qsort(3) within simpb_side() below.
  */
 static int
-simpb_vcmp(p1, p2)
-sort_type	*p1, *p2;
+simpb_vcmp (void const *v1, void const *v2)
 {
+	sort_type const *p1 = (sort_type const *)v1, *p2 = (sort_type const *)v2;
 	if (((p1->v & VAR_MASK) == SIGN) == ((p2->v & VAR_MASK) == SIGN)) {
 		if (p2->count == p1->count) {
 			if (p1->v < p2->v)
@@ -555,12 +555,13 @@ sort_type	*p1, *p2;
  * Factors variables in order: "sign" variables first, then by frequency.
  */
 void
-simpb_side(equation, np, uf_power_flag, power_flag, fc_level)
-token_type	*equation;	/* pointer to the beginning of equation side */
-int		*np;		/* pointer to length of equation side */
-int		uf_power_flag;	/* uf_allpower() flag */
-int		power_flag;	/* factor_power() flag */
-int		fc_level;	/* factor constants code, passed to factor_constants() */
+simpb_side (
+    token_type *equation,	/* pointer to the beginning of equation side */
+    int *np,			/* pointer to length of equation side */
+    int uf_power_flag,		/* uf_allpower() flag */
+    int power_flag,		/* factor_power() flag */
+    int fc_level		/* factor constants code, passed to factor_constants() */
+)
 {
 	int		i;
 	int		vc, cnt;	/* counts */
@@ -638,9 +639,10 @@ int		fc_level;	/* factor constants code, passed to factor_constants() */
  * Globals tlhs[] and trhs[] are wiped out.
  */
 void
-simple_frac_side(equation, np)
-token_type	*equation;	/* pointer to the beginning of equation side */
-int		*np;		/* pointer to length of equation side */
+simple_frac_side (
+    token_type *equation,	/* pointer to the beginning of equation side */
+    int *np			/* pointer to length of equation side */
+)
 {
 	if (*np == 1) {
 		make_simple_fractions(equation, np);
@@ -680,11 +682,12 @@ int		*np;		/* pointer to length of equation side */
  * Globals tlhs[] and trhs[] are wiped out.
  */
 void
-simpa_side(equation, np, quick_flag, frac_flag)
-token_type	*equation;	/* pointer to the beginning of equation side to simplify */
-int		*np;		/* pointer to length of the equation side */
-int		quick_flag;	/* "simplify quick" option, simpler with no (x+1)^2 expansion */
-int		frac_flag;	/* "simplify fraction" option, simplify to the ratio of two polynomials */
+simpa_side (
+    token_type *equation,	/* pointer to the beginning of equation side to simplify */
+    int *np,			/* pointer to length of the equation side */
+    int quick_flag,		/* "simplify quick" option, simpler with no (x+1)^2 expansion */
+    int frac_flag		/* "simplify fraction" option, simplify to the ratio of two polynomials */
+)
 {
 	int		i;
 	int		flag, poly_flag = true;
@@ -840,11 +843,12 @@ int		frac_flag;	/* "simplify fraction" option, simplify to the ratio of two poly
  * Globals tes[], tlhs[], and trhs[] are wiped out.
  */
 void
-simpa_repeat_side(equation, np, quick_flag, frac_flag)
-token_type	*equation;	/* pointer to the beginning of equation side to simplify */
-int		*np;		/* pointer to length of the equation side */
-int		quick_flag;	/* "simplify quick" option, simpler fractions with no (x+1)^2 expansion */
-int		frac_flag;	/* "simplify fraction" option, simplify to the ratio of two polynomials */
+simpa_repeat_side (
+    token_type *equation,	/* pointer to the beginning of equation side to simplify */
+    int *np,			/* pointer to length of the equation side */
+    int quick_flag,		/* "simplify quick" option, simpler fractions with no (x+1)^2 expansion */
+    int frac_flag		/* "simplify fraction" option, simplify to the ratio of two polynomials */
+)
 {
 	if (*np <= 0)
 		return;
@@ -868,10 +872,11 @@ int		frac_flag;	/* "simplify fraction" option, simplify to the ratio of two poly
  * Globals tes[], tlhs[], and trhs[] are clobbered.
  */
 void
-simpa_repeat(n, quick_flag, frac_flag)
-int	n;		/* equation space number to simplify */
-int	quick_flag;	/* "simplify quick" option, simpler fractions with no (x+1)^2 expansion */
-int	frac_flag;	/* "simplify fraction" option, simplify to the ratio of two polynomials */
+simpa_repeat (
+    int n,		/* equation space number to simplify */
+    int quick_flag,	/* "simplify quick" option, simpler fractions with no (x+1)^2 expansion */
+    int frac_flag	/* "simplify fraction" option, simplify to the ratio of two polynomials */
+)
 {
 	if (empty_equation_space(n))
 		return;
@@ -889,9 +894,10 @@ int	frac_flag;	/* "simplify fraction" option, simplify to the ratio of two polyn
  * Globals tes[], tlhs[], and trhs[] are wiped out.
  */
 void
-simple_frac_repeat_side(equation, np)
-token_type	*equation;	/* pointer to the beginning of equation side to simplify */
-int		*np;		/* pointer to length of the equation side */
+simple_frac_repeat_side (
+    token_type *equation,	/* pointer to the beginning of equation side to simplify */
+    int *np			/* pointer to length of the equation side */
+)
 {
 	if (*np <= 0)
 		return;
@@ -915,9 +921,10 @@ int		*np;		/* pointer to length of the equation side */
  * Return true if factor_times() did something.
  */
 int
-simp_loop(equation, np)
-token_type	*equation;	/* pointer to the beginning of equation side to simplify */
-int		*np;		/* pointer to length of equation side */
+simp_loop (
+    token_type *equation,	/* pointer to the beginning of equation side to simplify */
+    int *np			/* pointer to length of equation side */
+)
 {
 	int	i;
 	int	rv = false;
@@ -949,9 +956,7 @@ int		*np;		/* pointer to length of equation side */
  * Return true if equation side was modified.
  */
 int
-simp_pp(equation, np)
-token_type	*equation;
-int		*np;
+simp_pp (token_type *equation, int *np)
 {
 	int		i, j, k;
 	int		ilevel, jlevel;
@@ -1015,9 +1020,7 @@ int		*np;
  * Return true if equation side was modified.
  */
 int
-integer_root_simp(equation, np)
-token_type	*equation;
-int		*np;
+integer_root_simp (token_type *equation, int *np)
 {
 	int	modified = false;
 	int	i, j;
@@ -1098,9 +1101,7 @@ int		*np;
  * Return true if equation side was modified.
  */
 int
-simp_constant_power(equation, np)
-token_type	*equation;
-int		*np;
+simp_constant_power (token_type *equation, int *np)
 {
 	int	i, j;
 	int	level;
@@ -1152,9 +1153,7 @@ int		*np;
  * Return true if equation side was modified.
  */
 int
-simp2_power(equation, np)
-token_type	*equation;
-int		*np;
+simp2_power (token_type *equation, int *np)
 {
 	int	i, i1, j, k;
 	int	level;
@@ -1215,8 +1214,7 @@ int		*np;
  * Hopefully this fixes them.
  */
 double
-fixed_fmod(k1, k2)
-double	k1, k2;
+fixed_fmod (double k1, double k2)
 {
 	double	d;
 
@@ -1237,10 +1235,11 @@ double	k1, k2;
  * Return true if equation side was modified.
  */
 int
-combine_constants(equation, np, iflag)
-token_type	*equation;	/* pointer to the beginning of equation side */
-int		*np;		/* pointer to length of equation side */
-int		iflag;		/* produce imaginary numbers flag */
+combine_constants (
+    token_type *equation,	/* pointer to the beginning of equation side */
+    int *np,			/* pointer to length of equation side */
+    int iflag			/* produce imaginary numbers flag */
+)
 {
 	return const_recurse(equation, np, 0, 1, iflag);
 }
@@ -1252,11 +1251,12 @@ int		iflag;		/* produce imaginary numbers flag */
  * domain_check must be set to false after this.
  */
 int
-calc(op1p, k1p, op2, k2)
-int	*op1p;	/* Pointer to operator 1, which comes immediately before operand 1 if this operator exists. */
-double	*k1p;	/* Pointer to operand 1 and where to store the result of the calculation. */
-int	op2;	/* Operator 2; always exists and comes immediately before operand 2, and usually after operand 1. */
-double	k2;	/* Operand 2; ignored for unary operators. */
+calc (
+    int *op1p,		/* Pointer to operator 1, which comes immediately before operand 1 if this operator exists. */
+    double *k1p,	/* Pointer to operand 1 and where to store the result of the calculation. */
+    int op2,		/* Operator 2; always exists and comes immediately before operand 2, and usually after operand 1. */
+    double k2		/* Operand 2; ignored for unary operators. */
+)
 {
 #if	_REENTRANT
 	int	sign = 1;
@@ -1332,7 +1332,7 @@ double	k2;	/* Operand 2; ignored for unary operators. */
 		}
 		/* modulus_mode == 0 result same sign as dividend,
 		   modulus_mode == 1 result same sign as divisor,
-                   modulus_mode == 2 result is always positive or zero */
+		   modulus_mode == 2 result is always positive or zero */
 		break;
 	case POWER:
 		if (*k1p < 0.0 && fmod(k2, 1.0) != 0.0) {
@@ -1410,9 +1410,7 @@ double	k2;	/* Operand 2; ignored for unary operators. */
 }
 
 static int
-const_recurse(equation, np, loc, level, iflag)
-token_type	*equation;
-int		*np, loc, level, iflag;
+const_recurse (token_type *equation, int *np, int loc, int level, int iflag)
 {
 	int		loc1, old_loc;
 	int		const_count = 0;
@@ -1582,9 +1580,10 @@ beginning:
  * Return true if equation side was significantly modified.
  */
 int
-elim_k(equation, np)
-token_type	*equation;	/* equation side pointer */
-int		*np;		/* pointer to length of equation side */
+elim_k (
+    token_type *equation,	/* equation side pointer */
+    int *np			/* pointer to length of equation side */
+)
 {
 	token_type	*p1, *p2, *p3, *p4;
 	token_type	*ep;			/* end pointer */
@@ -1853,12 +1852,13 @@ int		*np;		/* pointer to length of equation side */
  * Otherwise return false.
  */
 int
-se_compare(p1, n1, p2, n2, diff_signp)
-token_type	*p1;		/* first sub-expression pointer */
-int		n1;		/* first sub-expression length */
-token_type	*p2;		/* second sub-expression pointer */
-int		n2;		/* second sub-expression length */
-int		*diff_signp;	/* different sign flag pointer */
+se_compare (
+    token_type *p1,		/* first sub-expression pointer */
+    int n1,			/* first sub-expression length */
+    token_type *p2,		/* second sub-expression pointer */
+    int n2,			/* second sub-expression length */
+    int *diff_signp		/* different sign flag pointer */
+)
 {
 	int	l1, l2;
 	int	rv;
@@ -1896,11 +1896,7 @@ int		*diff_signp;	/* different sign flag pointer */
  * Optimizing or streamlining this would greatly speed things up.
  */
 static int
-compare_recurse(p1, n1, l1, p2, n2, l2, diff_signp)
-token_type	*p1;
-int		n1, l1;
-token_type	*p2;
-int		n2, l2, *diff_signp;
+compare_recurse (token_type *p1, int n1, int l1, token_type *p2, int n2, int l2, int *diff_signp)
 {
 #define	compare_epsilon	epsilon
 
@@ -2137,9 +2133,7 @@ Also (x-y)^5 should compare identical with different sign to (y-x)^5.
  * Return true if equation side was modified.
  */
 int
-elim_sign(equation, np)
-token_type	*equation;
-int		*np;
+elim_sign (token_type *equation, int *np)
 {
 	int		i, j, k;
 	int		level;
@@ -2250,9 +2244,7 @@ int		*np;
  * Return true if equation side was modified.
  */
 int
-div_imaginary(equation, np)
-token_type	*equation;
-int		*np;
+div_imaginary (token_type *equation, int *np)
 {
 	int		i, j, k;
 	int		n;
@@ -2405,19 +2397,13 @@ int		*np;
  * This routine also checks the validity of the equation side.
  */
 int
-reorder(equation, np)
-token_type	*equation;
-int		*np;
+reorder (token_type *equation, int *np)
 {
 	return(order_recurse(equation, np, 0, 1));
 }
 
 static void
-swap(equation, np, level, i1, i2)
-token_type	*equation;
-int		*np;
-int		level;
-int		i1, i2;
+swap (token_type *equation, int *np, int level, int i1, int i2)
 {
 	int	e1, e2;
 	int	n1, n2;
@@ -2445,9 +2431,7 @@ int		i1, i2;
  * which starts at "loc" in an equation side.
  */
 static int
-order_recurse(equation, np, loc, level)
-token_type	*equation;
-int		*np, loc, level;
+order_recurse (token_type *equation, int *np, int loc, int level)
 {
 	int	i, j, k, n;
 	int	op = 0;
@@ -2559,9 +2543,7 @@ corrupt:
  * Unfactoring needs to be done immediately, if this returns true.
  */
 int
-rationalize(equation, np)
-token_type	*equation;
-int		*np;
+rationalize (token_type *equation, int *np)
 {
 	int	i, j, k;
 	int	i1, k1;

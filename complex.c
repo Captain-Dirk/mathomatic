@@ -2,7 +2,7 @@
  * Floating point complex number routines specifically for Mathomatic.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 #include "includes.h"
@@ -30,8 +30,7 @@ George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
  * The amplitude is stored in *radiusp and the angle in radians is stored in *thetap.
  */
 void
-rect_to_polar(x, y, radiusp, thetap)
-double	x, y, *radiusp, *thetap;
+rect_to_polar (double x, double y, double *radiusp, double *thetap)
 {
 	*radiusp = sqrt(x * x + y * y);
 	*thetap = atan2(y, x);
@@ -41,8 +40,7 @@ double	x, y, *radiusp, *thetap;
  * The roots command.
  */
 int
-roots_cmd(cp)
-char	*cp;
+roots_cmd (char *cp)
 {
 #define	MAX_ROOT	10000.0	/* Root limit needed because more roots become more inaccurate and take longer to check. */
 
@@ -152,9 +150,10 @@ do_repeat:
  * Return true if the equation side was modified.
  */
 int
-complex_root_simp(equation, np)
-token_type	*equation;	/* equation side pointer */
-int		*np;		/* pointer to length of equation side */
+complex_root_simp (
+    token_type *equation,	/* equation side pointer */
+    int *np			/* pointer to length of equation side */
+)
 {
 	int		i, j;
 	int		level;
@@ -228,9 +227,10 @@ start_over:
  * Return true if anything was approximated.
  */
 int
-approximate_complex_roots(equation, np)
-token_type	*equation;	/* equation side pointer */
-int		*np;		/* pointer to length of equation side */
+approximate_complex_roots (
+    token_type *equation,	/* equation side pointer */
+    int *np			/* pointer to length of equation side */
+)
 {
 	int	rv = false;
 
@@ -250,10 +250,11 @@ int		*np;		/* pointer to length of equation side */
  * Return true if successful, with the floating point constant returned in *dp.
  */
 int
-get_constant(p1, n, dp)
-token_type	*p1;	/* expression pointer */
-int		n;	/* length of expression */
-double		*dp;	/* pointer to returned double */
+get_constant (
+    token_type *p1,	/* expression pointer */
+    int n,		/* length of expression */
+    double *dp		/* pointer to returned double */
+)
 {
 	int	i, j;
 	int	level;
@@ -323,10 +324,11 @@ double		*dp;	/* pointer to returned double */
  * If successful, return true with complex number in *cp.
  */
 int
-parse_complex(p1, n, cp)
-token_type	*p1;	/* expression pointer */
-int		n;	/* length of expression */
-complexs	*cp;	/* pointer to returned complex number */
+parse_complex (
+    token_type *p1,	/* expression pointer */
+    int n,		/* length of expression */
+    complexs *cp	/* pointer to returned complex number */
+)
 {
 	int		j, k;
 	int		imag_cnt = 0, times_cnt = 0;
@@ -417,7 +419,7 @@ complexs	*cp;	/* pointer to returned complex number */
 								c.im = -c.im;
 						} else
 							break;
-					}		
+					}
 				}
 				if (!(p1[k+1].kind == VARIABLE && p1[k+1].token.variable == IMAGINARY)) {
 					if (get_constant(&p1[k+1], 1, &tmp.im)) {

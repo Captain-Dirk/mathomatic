@@ -2,7 +2,7 @@
  * Group and combine algebraic fractions for Mathomatic.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 #include "includes.h"
@@ -28,11 +28,12 @@ static int sf_recurse(token_type *equation, int *np, int loc, int level, int sta
 static int sf_sub(token_type *equation, int *np, int loc, int i1, int n1, int i2, int n2, int level, int start_flag);
 
 static void
-group_recurse(equation, np, loc, level)
-token_type	*equation;	/* equation side pointer */
-int		*np;		/* pointer to length of equation side */
-int		loc;		/* starting location within equation side */
-int		level;		/* current level of parentheses within the sub-expression starting at "loc" */
+group_recurse (
+    token_type *equation,	/* equation side pointer */
+    int *np,			/* pointer to length of equation side */
+    int loc,			/* starting location within equation side */
+    int level			/* current level of parentheses within the sub-expression starting at "loc" */
+)
 {
 	int		i;
 	int		len;
@@ -101,9 +102,10 @@ int		level;		/* current level of parentheses within the sub-expression starting 
  * Not guaranteed to put the grouped divisors last, reorder() puts divisors last.
  */
 void
-group_proc(equation, np)
-token_type	*equation;	/* equation side pointer */
-int		*np;		/* pointer to length of equation side */
+group_proc (
+    token_type *equation,	/* equation side pointer */
+    int *np			/* pointer to length of equation side */
+)
 {
 	group_recurse(equation, np, 0, 1);
 }
@@ -117,9 +119,7 @@ int		*np;		/* pointer to length of equation side */
  * Return true if any fractions were created.
  */
 int
-fractions_and_group(equation, np)
-token_type	*equation;
-int		*np;
+fractions_and_group (token_type *equation, int *np)
 {
 	int	rv = false;
 
@@ -138,8 +138,9 @@ int		*np;
  * Return true if any fractions were created.
  */
 int
-make_fractions_and_group(n)
-int	n;	/* equation space number */
+make_fractions_and_group (
+    int n	/* equation space number */
+)
 {
 	int	rv = false;
 
@@ -184,10 +185,11 @@ int	n;	/* equation space number */
  * Return true if the equation side was modified.
  */
 int
-super_factor(equation, np, start_flag)
-token_type	*equation;	/* pointer to the beginning of the equation side to process */
-int		*np;		/* pointer to the length of the equation side */
-int		start_flag;
+super_factor (
+    token_type *equation,	/* pointer to the beginning of the equation side to process */
+    int *np,			/* pointer to the length of the equation side */
+    int start_flag
+)
 {
 	int	rv;
 
@@ -198,9 +200,7 @@ int		start_flag;
 }
 
 static int
-sf_recurse(equation, np, loc, level, start_flag)
-token_type	*equation;
-int		*np, loc, level, start_flag;
+sf_recurse (token_type *equation, int *np, int loc, int level, int start_flag)
 {
 	int	modified = false;
 	int	i, j, k;
@@ -267,9 +267,7 @@ sf_again:
 }
 
 static int
-sf_sub(equation, np, loc, i1, n1, i2, n2, level, start_flag)
-token_type	*equation;
-int		*np, loc, i1, n1, i2, n2, level, start_flag;
+sf_sub (token_type *equation, int *np, int loc, int i1, int n1, int i2, int n2, int level, int start_flag)
 {
 	int		i, j, k;
 	int		b1, b2;
@@ -361,9 +359,9 @@ int		*np, loc, i1, n1, i2, n2, level, start_flag;
 		debug_string(1, "Done; polynomial GCD not found.");
 #endif
 	}
-        if (n1 + n2 + (i - b1) + (j - b2) + 8 > n_tokens) {
-                error_huge();
-        } 
+	if (n1 + n2 + (i - b1) + (j - b2) + 8 > n_tokens) {
+		error_huge();
+	}
 	if (!div_flag1) {
 		for (k = i1; k < e1; k++)
 			equation[k].level++;

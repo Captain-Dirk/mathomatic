@@ -4,7 +4,7 @@
  * Everything that depends on the command table goes here.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 #include "includes.h"
@@ -34,19 +34,19 @@ George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
  * The following structure is used for each Mathomatic command.
  */
 typedef	struct {
-	char	*name;			/* command name to be typed by user (must not contain any spaces) */
-	char	*secondary_name;	/* another name for this command */
-	int	(*func)();		/* function that handles this command */
+	char const *name;		/* command name to be typed by user (must not contain any spaces) */
+	char const *secondary_name;	/* another name for this command */
+	int	(*func) (char *);	/* function that handles this command */
 					/* function is passed a char pointer and returns true if successful */
-	char	*usage;			/* command syntax text */
-	char	*info;			/* one line description of command */
-	char	*extra;			/* one line extra info on command */
+	char const *usage;		/* command syntax text */
+	char const *info;		/* one line description of command */
+	char const *extra;		/* one line extra info on command */
 } com_type;
 
 /*
  * The Mathomatic command table follows.  It should be in alphabetical order.
  */
-static com_type com_list[] = {
+static com_type const com_list[] = {
 /*	command name,	alternate name,		function,		usage,							information */
 {	"approximate",	NULL,			approximate_cmd,	"[equation-number-ranges]",				"Approximate all numerical values in equation spaces.", "\"repeat approximate\" approximates more, like calculate." },
 #if	!LIBRARY
@@ -112,7 +112,7 @@ static com_type com_list[] = {
 };
 
 #if	HELP
-char	*example_strings[] = {
+char const *const example_strings[] = {
 	"; Example 1:\n",
 	"; Here the derivative of the absolute value function is computed.\n",
 	"; Expressions are entered by just typing them in:\n",
@@ -149,7 +149,7 @@ char	*example_strings[] = {
 #endif
 
 #if	HELP
-char	*geometry_strings[] = {
+char const *const geometry_strings[] = {
 	"; Triangle area, \"b\" is the \"base\" side:\n",
 	"triangle_area = b*height/2\n",
 	"; Here is Heron's formula for the area of any triangle\n",
@@ -187,7 +187,7 @@ char	*geometry_strings[] = {
 	NULL
 };
 
-char	*conversion_strings[] = {
+char const *const conversion_strings[] = {
 	"; Temperature\n",
 	"fahrenheit = (9*celsius/5) + 32\n",
 	"kelvin = celsius + 273.15\n",
@@ -210,9 +210,7 @@ char	*conversion_strings[] = {
  * Return true if successful.
  */
 int
-parse(n, cp)
-int	n;
-char	*cp;
+parse (int n, char *cp)
 {
 	if (parse_equation(n, cp)) {
 		if (n_lhs[n] == 0 && n_rhs[n] == 0)
@@ -241,9 +239,7 @@ char	*cp;
  * Return true if successful.
  */
 int
-process_parse(n, cp)
-int	n;
-char	*cp;
+process_parse (int n, char *cp)
 {
 	int		i;
 	char		*cp1, *ep;
@@ -431,7 +427,7 @@ char	*cp;
 					repeat_flag = previous_repeat_flag;
 #else
 					debug_string(0, _("Calculating..."));
-					rv = calculate_cmd("");		/* display the approximation */
+					rv = calculate_cmd((char *)"");		/* display the approximation */
 #endif
 					/* Keep the current input until next autocalc, then delete if "set autodelete". */
 					i = last_autocalc_en;
@@ -474,8 +470,7 @@ set_equal_to_zero:
  * Return true if line starts with a colon (:) or if successful.
  */
 int
-process(cp)
-char	*cp;
+process (char *cp)
 {
 	if (cp && cp[0] == ':') {
 		input_column++;
@@ -497,8 +492,7 @@ char	*cp;
  * Return true if successful.
  */
 int
-process_rv(cp)
-char	*cp;
+process_rv (char *cp)
 {
 	char	*cp1 = NULL;
 	char	*cp_start;
@@ -743,8 +737,9 @@ do_repeat:
  * Return true if successful.
  */
 int
-display_process(cp)
-char	*cp;	/* String to process; will be modified, so do not use constant strings. */
+display_process (
+    char *cp	/* String to process; will be modified, so do not use constant strings. */
+)
 {
 	int	len;
 	int	nlt;	/* true if cp is newline terminated */
@@ -800,8 +795,9 @@ char	*cp;	/* String to process; will be modified, so do not use constant strings
  * Returns exit status of command (0 if no error).
  */
 int
-shell_out(cp)
-char	*cp;	/* shell command string */
+shell_out (
+    char *cp	/* shell command string */
+)
 {
 	int	rv;
 
@@ -837,9 +833,10 @@ char	*cp;	/* shell command string */
  * Return new position in string or NULL if error.
  */
 char *
-parse_var2(vp, cp)
-long	*vp;	/* pointer to returned variable in Mathomatic internal format */
-char	*cp;	/* pointer to variable name string */
+parse_var2 (
+    long *vp,	/* pointer to returned variable in Mathomatic internal format */
+    char *cp	/* pointer to variable name string */
+)
 {
 	cp = skip_comma_space(cp);
 	cp = parse_var(vp, cp);
@@ -857,9 +854,10 @@ char	*cp;	/* pointer to variable name string */
  * Return number of lines displayed.
  */
 int
-display_usage(pstr, i)
-char	*pstr;	/* prefix string */
-int	i;
+display_usage (
+    char *pstr,	/* prefix string */
+    int i
+)
 {
 	int	len = 0;
 
@@ -881,8 +879,9 @@ int	i;
  * Return the number of lines output.
  */
 int
-display_command(i)
-int	i;	/* command table index of command */
+display_command (
+    int i	/* command table index of command */
+)
 {
 	int	rows = 2;
 
@@ -924,8 +923,7 @@ display_repeat_command(void)
 }
 
 int
-read_examples(cpp)
-char	**cpp;
+read_examples (char const *const *cpp)
 {
 	int	i;
 	char	*cp;
@@ -947,8 +945,9 @@ char	**cpp;
  * Display a row of dashes to underline a title.
  */
 void
-underline_title(count)
-int	count;	/* length of title, including newline */
+underline_title (
+    int count	/* length of title, including newline */
+)
 {
 #if	!NOT80COLUMNS
 	int	i;
@@ -964,8 +963,7 @@ int	count;	/* length of title, including newline */
  * The help command.
  */
 int
-help_cmd(cp)
-char	*cp;
+help_cmd (char *cp)
 {
 	int	i, j;
 	char	*cp1;
@@ -1138,7 +1136,7 @@ next_argument:
 		}
 #endif
 		if (strncasecmp(cp, "usage", cp1 - cp) == 0
-                    || strncasecmp(cp, "syntax", cp1 - cp) == 0) {
+		    || strncasecmp(cp, "syntax", cp1 - cp) == 0) {
 			underline_title(EP("Mathomatic Command Usage Syntax"));
 			for (i = 0, row = 3; i < ARR_CNT(com_list);) {
 				row += display_usage("", i);
@@ -1148,7 +1146,7 @@ next_argument:
 				if (screen_rows && row >= (screen_rows - 3)) {
 					row = 2;
 					if (gfp == stdout) {
-						if (!pause_cmd(""))
+					  if (!pause_cmd((char *)""))
 							return false;
 					}
 				}
@@ -1291,7 +1289,7 @@ next_argument:
 				if (screen_rows && row >= (screen_rows - 5)) {
 					row = 1;
 					if (gfp == stdout) {
-						if (!pause_cmd(""))
+					  if (!pause_cmd((char *)""))
 							return false;
 					}
 				}

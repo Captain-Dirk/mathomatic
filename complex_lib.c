@@ -4,7 +4,7 @@
  * Just include "complex.h" if you use this.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 #include "complex.h"
@@ -39,8 +39,9 @@ George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
  * Return true if something was zeroed out.
  */
 int
-complex_fixup(ap)
-complexs	*ap;	/* complex number pointer */
+complex_fixup (
+    complexs *ap	/* complex number pointer */
+)
 {
 	if (fabs(ap->re * epsilon) > fabs(ap->im)) {
 		ap->im = 0.0;
@@ -61,8 +62,7 @@ complexs	*ap;	/* complex number pointer */
  * complex_add(a, complex_negate(b)).
  */
 complexs
-complex_add(a, b)
-complexs	a, b;
+complex_add (complexs a, complexs b)
 {
 	a.re += b.re;
 	a.im += b.im;
@@ -74,8 +74,7 @@ complexs	a, b;
  * and return the complex number result.
  */
 complexs
-complex_negate(a)
-complexs	a;
+complex_negate (complexs a)
 {
 	a.re = -a.re;
 	a.im = -a.im;
@@ -87,8 +86,7 @@ complexs	a;
  * and return the complex number result.
  */
 complexs
-complex_mult(a, b)
-complexs	a, b;
+complex_mult (complexs a, complexs b)
 {
 	complexs	r;
 
@@ -102,9 +100,10 @@ complexs	a, b;
  * and return the complex number result.
  */
 complexs
-complex_div(a, b)
-complexs	a;	/* dividend */
-complexs	b;	/* divisor */
+complex_div (
+    complexs a,	/* dividend */
+    complexs b	/* divisor */
+)
 {
 	complexs	r, num;
 	double		denom;
@@ -122,8 +121,7 @@ complexs	b;	/* divisor */
  * and return the complex number result.
  */
 complexs
-complex_log(a)
-complexs	a;
+complex_log (complexs a)
 {
 	complexs	r;
 
@@ -137,8 +135,7 @@ complexs	a;
  * and return the complex number result.
  */
 complexs
-complex_exp(a)
-complexs	a;
+complex_exp (complexs a)
 {
 	complexs	r;
 	double		m;
@@ -154,8 +151,7 @@ complexs	a;
  * and return the complex number result.
  */
 complexs
-complex_pow(a, b)
-complexs	a, b;
+complex_pow (complexs a, complexs b)
 {
 	complexs	r;
 

@@ -4,7 +4,7 @@
  * any Mathomatic C source code.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -21,11 +21,16 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
+#ifndef MATHOMATIC_INCLUDES_H
+#define MATHOMATIC_INCLUDES_H
+
+#ifndef __cplusplus
 #define	true	1
 #define	false	0
+#endif
 
 #if	0
 #define	_REENTRANT	1	/* Can be defined before including math.h for Mac OS X.  Mac OS X allows a few re-entrant functions with this.  iOS requires this commented out. */
@@ -68,7 +73,10 @@ George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
 /* Include files from /usr/include: */
 #include <stdio.h>
 #include <stdlib.h>
+
+#if	SHELL_OUT
 #include <unistd.h>
+#endif
 
 #if	UNIX
 #include <libgen.h>
@@ -113,7 +121,12 @@ George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
 #include "standard.h"	/* a standard include file for any math program written in C */
 #include "am.h"		/* the main include file for Mathomatic, contains tunable parameters */
 #include "complex.h"	/* floating point complex number arithmetic function prototypes */
+#if __STDC__
 #include "proto.h"	/* global function prototypes, made with cproto utility */
+#else
 #include "altproto.h"	/* backup global function prototypes, in case of no proto.h */
+#endif
 #include "externs.h"	/* global variable extern definitions */
 #include "blt.h"	/* blt() function definition */
+
+#endif//ndef MATHOMATIC_INCLUDES_H
