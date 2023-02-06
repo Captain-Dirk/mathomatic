@@ -3451,7 +3451,7 @@ code_cmd (char *cp)
 /*
  * Compare function for qsort(3).
  */
-static int
+static int _cdecl
 cmds_vcmp (void const *v1, void const *v2)
 {
 	sort_type const *p1 = (sort_type const *)v1, *p2 = (sort_type const *)v2;

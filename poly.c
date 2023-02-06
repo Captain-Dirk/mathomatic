@@ -71,7 +71,7 @@ static int find_highest_count(token_type *p1, int n1, token_type *p2, int n2, lo
 /*
  * Compare function for qsort(3).
  */
-static int
+static int _cdecl
 poly_vcmp (void const *v1, void const *v2)
 {
 	sort_type const *p1 = (sort_type const *)v1, *p2 = (sort_type const *)v2;
@@ -834,7 +834,7 @@ int
 is_integer_var (long v)
 {
 	char	*cp;
-	int	(*strncmpfunc) (char const *, char const *, size_t);
+	int	(_cdecl *strncmpfunc) (char const *, char const *, size_t);
 
 	if (case_sensitive_flag) {
 		strncmpfunc = strncmp;

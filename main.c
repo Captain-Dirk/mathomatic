@@ -135,7 +135,7 @@ main (int argc, char **argv)
 	textdomain(prog_name);
 #endif
 
-#if	CYGWIN || MINGW
+#if	CYGWIN || MINGW || _MSC_VER
 	dir_path = strdup(dirname_win(argv[0]));	/* set dir_path to this executable's directory */
 #endif
 	/* initialize the global variables */
@@ -441,7 +441,7 @@ set_signals (unsigned int time_out_seconds)
 	if (signal(SIGALRM, alarmhandler) == SIG_ERR)
 		rv = SIGALRM;
 #endif
-#if	!MINGW
+#if	!MINGW && !_MSC_VER
 	if (time_out_seconds > 0) {
 		alarm(time_out_seconds);
 #if	TIMEOUT_SECONDS
@@ -457,7 +457,7 @@ set_signals (unsigned int time_out_seconds)
  * Floating point exception handler.
  * Floating point exceptions are currently ignored.
  */
-void
+void _cdecl
 fphandler (int sig)
 {
 #if	DEBUG
@@ -470,7 +470,7 @@ fphandler (int sig)
  * Interrupts processing and returns to main prompt through a polling mechanism.
  * If it can't, repeated calls terminate this program.
  */
-void
+void _cdecl
 inthandler (int sig)
 {
 	abort_flag++;
@@ -505,7 +505,7 @@ alarmhandler (int sig)
 /*
  * Signal handler for proper exiting to the operating system.
  */
-void
+void _cdecl
 exithandler (int sig)
 {
 	exit_program(1);
@@ -515,7 +515,7 @@ exithandler (int sig)
 /*
  * Window resize signal handler.
  */
-void
+void _cdecl
 resizehandler (int sig)
 {
 	if (screen_columns)

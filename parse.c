@@ -659,7 +659,7 @@ parse_var (long *vp, char *cp)
 	char	*cp1;
 	int	len;
 	int	level;		/* parentheses level */
-	int	(*strcmpfunc) (char const *, char const *);
+	int	(_cdecl *strcmpfunc) (char const *, char const *);
 
 	if (case_sensitive_flag) {
 		strcmpfunc = strcmp;

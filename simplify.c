@@ -527,7 +527,7 @@ simp2_divide (token_type *equation, int *np, long v, int fc_level)
 /*
  * Compare function for qsort(3) within simpb_side() below.
  */
-static int
+static int _cdecl
 simpb_vcmp (void const *v1, void const *v2)
 {
 	sort_type const *p1 = (sort_type const *)v1, *p2 = (sort_type const *)v2;

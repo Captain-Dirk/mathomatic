@@ -70,11 +70,15 @@ George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
 #warning SHELL_OUT defined during secure mode compilation.  This is a security problem.
 #endif
 
+#ifdef	_MSC_VER
+#define MINGW 1
+#endif
+
 /* Include files from /usr/include: */
 #include <stdio.h>
 #include <stdlib.h>
 
-#if	SHELL_OUT
+#if	UNIX || SHELL_OUT
 #include <unistd.h>
 #endif
 
@@ -100,6 +104,27 @@ George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
 #include <errno.h>
 #include <signal.h>
 
+#ifdef _MSC_VER
+# define strncasecmp _strnicmp
+# define strcasecmp _stricmp
+# include <io.h>
+# include <direct.h>
+# define getcwd _getcwd
+# define access _access
+# define chdir _chdir
+#endif
+
+#if !defined _cdecl && !defined _WIN32
+# define _cdecl
+#endif
+
+#ifndef F_OK
+# define F_OK 0
+# define X_OK 1
+# define W_OK 2
+# define R_OK 4
+#endif
+
 #if	I18N		/* Internationalization doesn't work yet.  It would need a translation and some work on the code and makefile. */
 #include <libintl.h>	/* Mac OS X doesn't have libintl.h, so define "char *gettext();" then. */
 #include <locale.h>
@@ -121,7 +146,7 @@ George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
 #include "standard.h"	/* a standard include file for any math program written in C */
 #include "am.h"		/* the main include file for Mathomatic, contains tunable parameters */
 #include "complex.h"	/* floating point complex number arithmetic function prototypes */
-#if __STDC__
+#if __STDC__ || _MSC_VER
 #include "proto.h"	/* global function prototypes, made with cproto utility */
 #else
 #include "altproto.h"	/* backup global function prototypes, in case of no proto.h */

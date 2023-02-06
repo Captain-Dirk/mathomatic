@@ -43,8 +43,10 @@ George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
 #define INFINITY	HUGE_VAL			/* the floating point, positive infinity constant */
 #endif
 
+#ifndef _MSC_VER
 #ifndef	isfinite
 #define	isfinite(d)	finite(d)			/* true if double d is finite (not infinity nor NaN) */
+#endif
 #endif
 
 #ifndef	isinf

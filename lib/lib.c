@@ -231,7 +231,7 @@ matho_parse(char *input, char **outputp)
  * Floating point exception handler.
  * Usually doesn't work in most operating systems, so just ignore it.
  */
-void
+void _cdecl
 fphandler(int sig)
 {
 /*	error(_("Floating point exception.")); */
