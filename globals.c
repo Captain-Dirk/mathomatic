@@ -30,8 +30,8 @@ George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
 
 int		n_tokens = DEFAULT_N_TOKENS;	/* maximum size of expressions, must only be set during startup */
 
-int		n_equations,			/* number of equation spaces allocated */
-		cur_equation;			/* current equation space number (origin 0) */
+int		n_equations;			/* number of equation spaces allocated */
+__thread int	cur_equation;			/* current equation space number (origin 0) */
 
 /* expression storage pointers and current length variables (they go together) */
 token_type	*lhs[N_EQUATIONS],		/* The Left Hand Sides of equation spaces */
@@ -165,9 +165,10 @@ int		point_flag;		/* point to location of parse error if true */
 
 /* library variables go here */
 char		*result_str;		/* returned result text string when using as library */
-int		result_en = -1;		/* equation number of the returned result, if stored in an equation space */
+__thread int result_en = -1;		/* equation number of the returned result, if stored in an equation space */
 const char	*error_str;		/* last error string */
-const char	*warning_str;		/* last warning string */
+__thread const char *warning_str;
+/* last warning string */
 
 /* Screen character array, for buffering page-at-a-time 2D string output: */
 char		*vscreen[TEXT_ROWS];

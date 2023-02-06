@@ -14,6 +14,41 @@
 #include "../includes.h"
 #include "mathomatic.h"
 
+#if	LOCKED_LIB
+
+#if	CYGWIN || MINGW || _MSC_VER
+
+#undef  WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#undef  WIN32_LEAN_AND_MEAN
+
+static CRITICAL_SECTION cs;
+static void init_lock()		{ InitializeCriticalSection (cs); }
+static void lock()		{ EnterCriticalSection (cs); }
+static void unlock()		{ LeaveCriticalSection (cs); }
+
+#else
+
+#include <errno.h>
+#include <pthread.h>
+
+static pthread_mutex_t mtx;
+static void init_lock()		{ pthread_mutex_init (&mtx, 0); }
+static void lock()		{ pthread_mutex_lock (&mtx); }
+static void unlock()		{ pthread_mutex_unlock (&mtx); }
+
+#endif
+
+#else
+
+#define init_lock()
+#define lock()
+#define unlock()
+
+#endif
+
+
 /** 3
  * matho_init - Initialize the Mathomatic symbolic math library
  * Call this only once before calling any Mathomatic code.
@@ -27,10 +62,12 @@
 int
 matho_init(void)
 {
+	init_lock();
 	init_gvars();
 	default_out = stdout;	/* if default_out is a file that is not stdout, output is logged to that file */
 	gfp = default_out;
 	if (!init_mem()) {
+		unlock();
 		return false;
 	}
 	signal(SIGFPE, fphandler);	/* handle floating point exceptions, currently ignored */
@@ -49,7 +86,9 @@ matho_init(void)
 void
 matho_clear(void)
 {
+	lock();
 	clear_all();
+	unlock();
 }
 
 /** 3
@@ -90,14 +129,16 @@ matho_process(char *input, char **outputp)
 	int	i;
 	int	rv;
 
+	lock();
 	if (outputp)
 		*outputp = NULL;
 	result_str = NULL;
 	result_en = -1;
 	error_str = NULL;
 	warning_str = NULL;
-	if (input == NULL)
-		return false;
+	if (input == NULL) {
+		unlock();
+		return false; }
 	input = strdup(input);
 	if ((i = setjmp(jmp_save)) != 0) {
 		clean_up();	/* Mathomatic processing was interrupted, so do a clean up. */
@@ -114,6 +155,7 @@ matho_process(char *input, char **outputp)
 		free_result_str();
 		free(input);
 		previous_return_value = 0;
+		unlock();
 		return false;
 	}
 	set_error_level(input);
@@ -138,6 +180,7 @@ matho_process(char *input, char **outputp)
 		free_result_str();
 	}
 	free(input);
+	unlock();
 	return rv;
 }
 
@@ -172,14 +215,16 @@ matho_parse(char *input, char **outputp)
 	int	i;
 	int	rv;
 
+	lock();
 	if (outputp)
 		*outputp = NULL;
 	result_str = NULL;
 	result_en = -1;
 	error_str = NULL;
 	warning_str = NULL;
-	if (input == NULL)
-		return false;
+	if (input == NULL) {
+		unlock();
+		return false; }
 	input = strdup(input);
 	if ((i = setjmp(jmp_save)) != 0) {
 		clean_up();	/* Mathomatic processing was interrupted, so do a clean up. */
@@ -195,6 +240,7 @@ matho_parse(char *input, char **outputp)
 		}
 		free_result_str();
 		free(input);
+		unlock();
 		return false;
 	}
 	set_error_level(input);
@@ -224,6 +270,7 @@ matho_parse(char *input, char **outputp)
 		free_result_str();
 	}
 	free(input);
+	unlock();
 	return rv;
 }
 
