@@ -118,7 +118,7 @@ char		prompt_str[MAX_PROMPT_LEN];	/* temp storage for the prompt string */
 char		rc_file[MAX_CMD_LEN];		/* pathname for the set options startup file */
 #endif
 
-#if	CYGWIN || MINGW
+#ifdef	_WIN32
 char		*dir_path;			/* directory path to the executable */
 #endif
 #if	READLINE || EDITLINE

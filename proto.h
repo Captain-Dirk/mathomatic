@@ -60,7 +60,7 @@ int exp_is_numeric(token_type *p1, int n1);
 int exp_is_absolute(token_type *p1, int n1);
 int check_divide_by_zero(double denominator);
 char *dirname_win(char *cp);
-int load_rc(int return_true_if_no_file, FILE *ofp);
+EXPORT int load_rc(int return_true_if_no_file, FILE *ofp);
 /* cmds.c */
 int plot_cmd(char *cp);
 int version_cmd(char *cp);

@@ -58,7 +58,7 @@ George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
 #define	CYGWIN	1
 #endif
 
-#if 	CYGWIN || MINGW
+#if 	_WIN32
 #undef	UNIX		/* Unix desktop functionality is slightly different for CYGWIN and MINGW */
 #endif
 
@@ -104,7 +104,7 @@ George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
 #include <errno.h>
 #include <signal.h>
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 # define strncasecmp _strnicmp
 # define strcasecmp _stricmp
 # include <io.h>
@@ -123,6 +123,19 @@ George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
 # define X_OK 1
 # define W_OK 2
 # define R_OK 4
+#endif
+
+#if SHARED_LIB
+# if defined _WIN32
+#  define EXPORT __declspec(dllexport)
+# elif defined(__GNUC__)
+#  define EXPORT __attribute__((visibility("default")))
+# else
+#  define EXPORT
+#  warning Unknown dynamic link import/export semantics.
+# endif
+#else
+# define EXPORT
 #endif
 
 #if	I18N		/* Internationalization doesn't work yet.  It would need a translation and some work on the code and makefile. */

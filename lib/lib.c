@@ -24,7 +24,7 @@
  * If this returns false, there was not enough memory available
  * and Mathomatic cannot be used.
  */
-int
+EXPORT int
 matho_init(void)
 {
 	init_gvars();
@@ -46,7 +46,7 @@ matho_init(void)
  * matho_init(3) must have been called only one time before this
  * to initialize the Mathomatic symbolic math engine.
  */
-void
+EXPORT void
 matho_clear(void)
 {
 	clear_all();
@@ -84,7 +84,7 @@ matho_clear(void)
  * The resulting output string can safely be ignored by calling
  * this function with "outputp" set to NULL.
  */
-int
+EXPORT int
 matho_process(char *input, char **outputp)
 {
 	int	i;
@@ -166,7 +166,7 @@ matho_process(char *input, char **outputp)
  *
  * Returns true (non-zero) if successful.
  */
-int
+EXPORT int
 matho_parse(char *input, char **outputp)
 {
 	int	i;
@@ -225,6 +225,25 @@ matho_parse(char *input, char **outputp)
 	}
 	free(input);
 	return rv;
+}
+
+EXPORT int
+matho_current_eqn()
+{
+  return cur_equation;
+}
+
+
+EXPORT int
+matho_result_eqn()
+{
+  return result_en;
+}
+
+EXPORT const char *
+matho_warning()
+{
+  return warning_str;
 }
 
 /*

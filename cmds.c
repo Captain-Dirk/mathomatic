@@ -4585,7 +4585,7 @@ edit_sub (char *cp)
 edit_again:
 	cp1 = getenv("EDITOR");
 	if (cp1 == NULL) {
-#if	CYGWIN || MINGW
+#ifdef	_WIN32
 		cp1 = "notepad";
 #else
 		cp1 = "nano";

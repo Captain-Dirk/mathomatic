@@ -93,7 +93,7 @@ extern char		prompt_str[MAX_PROMPT_LEN];
 extern char		rc_file[MAX_CMD_LEN];
 #endif
 
-#if	CYGWIN || MINGW
+#ifdef	_WIN32
 extern char		*dir_path;
 #endif
 #if	READLINE || EDITLINE

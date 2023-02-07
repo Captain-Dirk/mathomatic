@@ -281,7 +281,7 @@ init_mem(void)
  * all the memory it allocated is released by the operating system.
  * Inclusion of this routine was requested by Tam Hanna for use with Symbian OS.
  */
-void
+EXPORT void
 free_mem(void)
 {
 	int	i;
@@ -1556,7 +1556,7 @@ check_divide_by_zero (double denominator)
 	return false;
 }
 
-#if	CYGWIN || MINGW
+#ifdef	_WIN32
 /*
  * dirname(3) function for Microsoft Windows.
  * dirname(3) strips the non-directory suffix from a filename.
@@ -1603,7 +1603,7 @@ load_rc (
 		snprintf(rc_file, sizeof(rc_file), "%s/%s", cp, ".mathomaticrc");
 		fp = fopen(rc_file, "r");
 	}
-#if	CYGWIN || MINGW
+#ifdef	_WIN32
 	if (fp == NULL && cp) {
 		snprintf(rc_file, sizeof(rc_file), "%s/%s", cp, "mathomatic.rc");
 		fp = fopen(rc_file, "r");

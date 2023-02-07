@@ -135,7 +135,7 @@ main (int argc, char **argv)
 	textdomain(prog_name);
 #endif
 
-#if	CYGWIN || MINGW || _MSC_VER
+#ifdef	_WIN32
 	dir_path = strdup(dirname_win(argv[0]));	/* set dir_path to this executable's directory */
 #endif
 	/* initialize the global variables */
@@ -433,7 +433,7 @@ set_signals (unsigned int time_out_seconds)
 	if (signal(SIGHUP, exithandler) == SIG_ERR)
 		rv = SIGHUP;
 #endif
-#if	UNIX || CYGWIN
+#ifdef	SIGWINCH
 	if (signal(SIGWINCH, resizehandler) == SIG_ERR)
 		rv = SIGWINCH;
 #endif
@@ -511,7 +511,7 @@ exithandler (int sig)
 	exit_program(1);
 }
 
-#if	UNIX || CYGWIN
+#ifdef	SIGWINCH
 /*
  * Window resize signal handler.
  */
