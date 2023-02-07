@@ -22,17 +22,9 @@ George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
 
  */
 
-#if	LOCKED_LIB
-#if	_MSC_VER
-#define __thread __declspec(thread)
-#endif
-#else
-#define __thread
-#endif
-
 extern int		n_tokens;
 extern int		n_equations;
-extern __thread int	cur_equation;
+extern int		cur_equation;
 
 extern token_type	*lhs[N_EQUATIONS];
 extern token_type	*rhs[N_EQUATIONS];
@@ -136,9 +128,9 @@ extern int		show_usage;
 extern int		point_flag;
 
 extern char		*result_str;
-extern __thread int	result_en;
+extern int		result_en;
 extern const char	*error_str;
-extern __thread const char *warning_str;
+extern const char	*warning_str;
 
 extern char		*vscreen[TEXT_ROWS];
 extern int		current_columns;
