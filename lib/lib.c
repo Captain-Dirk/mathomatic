@@ -37,6 +37,15 @@ matho_init(void)
 	return true;
 }
 
+EXPORT FILE *
+matho_outfile (FILE *fp)
+{
+	FILE *old = gfp;
+	default_out = fp;
+	gfp = default_out;
+	return old;
+}
+
 /** 3
  * matho_clear - Erase all equation spaces so they can be reused
  * Mathomatic only has a limited number of equation spaces.

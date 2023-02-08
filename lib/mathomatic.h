@@ -16,6 +16,7 @@
 #endif
 
 EXPORT int matho_init(void);				/* one-time Mathomatic initialization */
+EXPORT FILE *matho_outfile (FILE *fp);			/* set output, return previous */
 EXPORT int matho_process(char *input, char **outputp);	/* Mathomatic command or expression input */
 EXPORT int matho_parse(char *input, char **outputp);	/* Mathomatic expression or equation input */
 EXPORT void matho_clear(void);				/* Restart Mathomatic quickly and cleanly, replaces clear_all(). */
