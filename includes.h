@@ -32,6 +32,12 @@ George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
 #define	false	0
 #endif
 
+#if defined(__GNUC__)		/* Silence static analyzer warning. */
+# define NORETURN __attribute__((noreturn))
+#else
+# define NORETURN
+#endif
+
 #if	0
 #define	_REENTRANT	1	/* Can be defined before including math.h for Mac OS X.  Mac OS X allows a few re-entrant functions with this.  iOS requires this commented out. */
 #endif

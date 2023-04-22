@@ -889,7 +889,7 @@ poly_solve (
 			}
 		}
 	}
-	if (high_power == 0.0)
+	if (high_power == 0.0 || x1p == NULL)
 		return false;
 #if	!SILENT
 	if (debug_level >= 0) {

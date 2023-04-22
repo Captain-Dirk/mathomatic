@@ -208,7 +208,7 @@ void _cdecl fphandler(int sig);
 void _cdecl inthandler(int sig);
 void _cdecl exithandler(int sig);
 void _cdecl resizehandler(int sig);
-void exit_program(int exit_value);
+void exit_program(int exit_value) NORETURN;
 /* parse.c */
 void str_tolower(char *cp);
 void put_up_arrow(int cnt, char *cp);
