@@ -2,7 +2,7 @@
  * Expression parsing routines for Mathomatic.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 #include "includes.h"
@@ -28,8 +28,7 @@ George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
  * Convert all alphabetic characters in a string to lower case.
  */
 void
-str_tolower(cp)
-char	*cp;
+str_tolower (char *cp)
 {
 	if (cp) {
 		for (; *cp; cp++) {
@@ -45,9 +44,10 @@ char	*cp;
  * followed by the error message, which must be a constant string.
  */
 void
-put_up_arrow(cnt, cp)
-int	cnt;	/* position of error, relative to "input_column" */
-char	*cp;	/* error message (constant ASCII string) */
+put_up_arrow (
+    int cnt,	/* position of error, relative to "input_column" */
+    char *cp	/* error message (constant ASCII string) */
+)
 {
 #if	!SILENT && !LIBRARY
 	int	 i;
@@ -67,8 +67,7 @@ char	*cp;	/* error message (constant ASCII string) */
  * Return true if character is a valid starting variable character.
  */
 int
-isvarchar(ch)
-int	ch;
+isvarchar (int ch)
 {
 	if (isdigit(ch)) {	/* variable names can never start with a digit */
 		return false;
@@ -81,8 +80,7 @@ int	ch;
  * Otherwise, return 0.
  */
 int
-paren_increment(ch)
-int	ch;
+paren_increment (int ch)
 {
 	switch (ch) {
 	case '(':
@@ -97,8 +95,7 @@ int	ch;
  * Return true if character (ch) is the beginning of a Mathomatic operator.
  */
 int
-is_mathomatic_operator(ch)
-int	ch;
+is_mathomatic_operator (int ch)
 {
 	switch (ch) {
 	case '!':
@@ -119,10 +116,11 @@ int	ch;
  * Parenthesize an operator.
  */
 void
-binary_parenthesize(p1, n, i)
-token_type	*p1;	/* pointer to expression */
-int		n;	/* length of expression */
-int		i;	/* location of operator to parenthesize in expression */
+binary_parenthesize (
+    token_type *p1,	/* pointer to expression */
+    int n,		/* length of expression */
+    int i		/* location of operator to parenthesize in expression */
+)
 {
 	int	j;
 	int	level;
@@ -161,9 +159,7 @@ finish:
  * Handle and remove the special NEGATE operator.
  */
 void
-handle_negate(equation, np)
-token_type	*equation;
-int		*np;
+handle_negate (token_type *equation, int *np)
 {
 	int	i;
 
@@ -186,9 +182,10 @@ int		*np;
  * organize() should be called after this to remove unneeded parentheses.
  */
 void
-give_priority(equation, np)
-token_type	*equation;	/* pointer to expression */
-int		*np;		/* pointer to expression length */
+give_priority (
+    token_type *equation,	/* pointer to expression */
+    int *np			/* pointer to expression length */
+)
 {
 	int	i;
 
@@ -236,11 +233,12 @@ int		*np;		/* pointer to expression length */
  * Returns the new string position, or NULL if error.
  */
 char *
-parse_section(equation, np, cp, allow_space)
-token_type	*equation;	/* where the parsed expression is stored (equation side) */
-int		*np;		/* pointer to the returned parsed expression length */
-char		*cp;		/* string to parse */
-int		allow_space;	/* if false, any space characters terminate parsing */
+parse_section (
+    token_type *equation,	/* where the parsed expression is stored (equation side) */
+    int *np,			/* pointer to the returned parsed expression length */
+    char *cp,			/* string to parse */
+    int allow_space		/* if false, any space characters terminate parsing */
+)
 {
 	int		i;
 	int		n = 0, old_n;		/* position in equation[] */
@@ -604,9 +602,10 @@ syntax_error:
  * Currently, there can be no more to parse in the string when this returns.
  */
 char *
-parse_equation(n, cp)
-int	n;	/* equation space number */
-char	*cp;	/* pointer to the beginning of the equation character string */
+parse_equation (
+    int n,	/* equation space number */
+    char *cp	/* pointer to the beginning of the equation character string */
+)
 {
 	if ((cp = parse_expr(lhs[n], &n_lhs[n], cp, true)) != NULL) {
 		if ((cp = parse_expr(rhs[n], &n_rhs[n], cp, true)) != NULL) {
@@ -626,11 +625,12 @@ char	*cp;	/* pointer to the beginning of the equation character string */
  * Returns the new string position, or NULL if error.
  */
 char *
-parse_expr(equation, np, cp, allow_space)
-token_type	*equation;	/* where the parsed expression is stored (equation side) */
-int		*np;		/* pointer to the returned parsed expression length */
-char		*cp;		/* string to parse */
-int		allow_space;	/* if true, allow and ignore space characters; if false, space means terminate parsing */
+parse_expr (
+    token_type *equation,	/* where the parsed expression is stored (equation side) */
+    int *np,			/* pointer to the returned parsed expression length */
+    char *cp,			/* string to parse */
+    int allow_space		/* if true, allow and ignore space characters; if false, space means terminate parsing */
+)
 {
 	if (cp == NULL)
 		return NULL;
@@ -651,9 +651,7 @@ int		allow_space;	/* if true, allow and ignore space characters; if false, space
  * Display error message and return NULL on failure.
  */
 char *
-parse_var(vp, cp)
-long	*vp;
-char	*cp;
+parse_var (long *vp, char *cp)
 {
 	int	i, j;
 	long	vtmp;
@@ -661,7 +659,7 @@ char	*cp;
 	char	*cp1;
 	int	len;
 	int	level;		/* parentheses level */
-	int	(*strcmpfunc)();
+	int	(_cdecl *strcmpfunc) (char const *, char const *);
 
 	if (case_sensitive_flag) {
 		strcmpfunc = strcmp;
@@ -806,8 +804,7 @@ char	*cp;
  * Remove trailing spaces from a string.
  */
 void
-remove_trailing_spaces(cp)
-char	*cp;
+remove_trailing_spaces (char *cp)
 {
 	int	i;
 
@@ -824,8 +821,9 @@ char	*cp;
  * Truncate string to the actual content.
  */
 void
-set_error_level(cp)
-char	*cp;	/* input string */
+set_error_level (
+    char *cp	/* input string */
+)
 {
 	char	*cp1;
 	int	len;
@@ -862,9 +860,7 @@ char	*cp;	/* input string */
  * Return value of constant in "*dp".
  */
 int
-var_is_const(v, dp)
-long	v;
-double	*dp;
+var_is_const (long v, double *dp)
 {
 	if (v == V_E) {
 		if (dp)
@@ -885,9 +881,7 @@ double	*dp;
  * Return true if anything was substituted (therefore approximated).
  */
 int
-subst_constants(equation, np)
-token_type	*equation;
-int		*np;
+subst_constants (token_type *equation, int *np)
 {
 	int	i;
 	int	modified = false;
@@ -915,9 +909,7 @@ int		*np;
  * Return length of src.
  */
 int
-my_strlcpy(dest, src, n)
-char	*dest, *src;
-int	n;
+my_strlcpy (char *dest, char *src, int n)
 {
 	int	len, len_src;
 

@@ -2,7 +2,7 @@
  * Mathomatic unfactorizing (expanding) routines.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 #include "includes.h"
@@ -32,9 +32,7 @@ static int unf_sub(token_type *equation, int *np, int b1, int loc, int e1, int l
  * Return true if equation side was unfactored.
  */
 int
-uf_tsimp(equation, np)
-token_type	*equation;
-int		*np;
+uf_tsimp (token_type *equation, int *np)
 {
 	int	rv;
 
@@ -54,9 +52,7 @@ int		*np;
  * Return true if equation side was unfactored.
  */
 int
-uf_power(equation, np)
-token_type	*equation;
-int		*np;
+uf_power (token_type *equation, int *np)
 {
 	int	count = -1;
 
@@ -75,9 +71,7 @@ int		*np;
  * Return true if equation side was unfactored.
  */
 int
-uf_pplus(equation, np)
-token_type	*equation;
-int		*np;
+uf_pplus (token_type *equation, int *np)
 {
 	int	count = -1;
 
@@ -94,9 +88,7 @@ int		*np;
  * Same as a call to uf_pplus() and uf_power(), only faster.
  */
 void
-uf_allpower(equation, np)
-token_type	*equation;
-int		*np;
+uf_allpower (token_type *equation, int *np)
 {
 	do {
 		organize(equation, np);
@@ -112,9 +104,7 @@ int		*np;
  * uf_times() is usually called after this to complete the expansion.
  */
 void
-uf_repeat(equation, np)
-token_type	*equation;
-int		*np;
+uf_repeat (token_type *equation, int *np)
 {
 	int	count = -1;
 
@@ -132,9 +122,7 @@ int		*np;
  * Useful for removing all integer powers.
  */
 void
-uf_repeat_always(equation, np)
-token_type	*equation;
-int		*np;
+uf_repeat_always (token_type *equation, int *np)
 {
 	int	count = -1;
 
@@ -149,9 +137,10 @@ int		*np;
  * Totally unfactor equation side and simplify.
  */
 void
-uf_simp(equation, np)
-token_type	*equation;	/* pointer to beginning of equation side */
-int		*np;		/* pointer to length of equation side */
+uf_simp (
+    token_type *equation,	/* pointer to beginning of equation side */
+    int *np			/* pointer to length of equation side */
+)
 {
 	uf_tsimp(equation, np);
 	uf_power(equation, np);
@@ -164,9 +153,7 @@ int		*np;		/* pointer to length of equation side */
  * Don't call uf_repeat().
  */
 void
-uf_simp_no_repeat(equation, np)
-token_type	*equation;
-int		*np;
+uf_simp_no_repeat (token_type *equation, int *np)
 {
 	uf_power(equation, np);
 	uf_tsimp(equation, np);
@@ -176,9 +163,7 @@ int		*np;
  * Totally unfactor equation side with no simplification.
  */
 int
-ufactor(equation, np)
-token_type	*equation;
-int		*np;
+ufactor (token_type *equation, int *np)
 {
 	int	rv;
 
@@ -192,9 +177,7 @@ int		*np;
  * Increase the level of numerators by 2, so that the divide operator is not unfactored.
  */
 static void
-no_divide(equation, np)
-token_type	*equation;
-int		*np;
+no_divide (token_type *equation, int *np)
 {
 	int	i, j;
 	int	level;
@@ -219,9 +202,7 @@ int		*np;
  * Return true if equation side was unfactored.
  */
 int
-uf_times(equation, np)
-token_type	*equation;
-int		*np;
+uf_times (token_type *equation, int *np)
 {
 	int	i;
 	int	rv = false;
@@ -250,10 +231,7 @@ int		*np;
  * Return true if equation side was modified.
  */
 int
-sub_ufactor(equation, np, ii)
-token_type	*equation;
-int		*np;
-int		ii;
+sub_ufactor (token_type *equation, int *np, int ii)
 {
 	int	modified = false;
 	int	i;
@@ -293,11 +271,7 @@ int		ii;
 }
 
 static int
-unf_sub(equation, np, b1, loc, e1, level, ii)
-token_type	*equation;
-int		*np;
-int		b1, loc, e1, level;
-int		ii;
+unf_sub (token_type *equation, int *np, int b1, int loc, int e1, int level, int ii)
 {
 	int		i, j, k;
 	int		b2, eb1, be1;
@@ -375,7 +349,7 @@ u_again:
 		if ((loc + 3) < *np && equation[loc+1].level == level && equation[loc+1].kind == CONSTANT
 		    && equation[loc+2].level == (level - 1) && equation[loc+2].token.operatr == POWER
 		    && equation[loc+3].kind == CONSTANT && ((equation[loc+3].level == (level - 1))
-		    || ((loc + 5) < *np && equation[loc+3].level == level 
+		    || ((loc + 5) < *np && equation[loc+3].level == level
 		    && equation[loc+4].level == level && equation[loc+4].token.operatr == DIVIDE
 		    && equation[loc+5].level == level && equation[loc+5].kind == CONSTANT
 		    && ((loc + 6) >= *np || equation[loc+6].level < level)))) {
@@ -526,9 +500,7 @@ do_repeat:
 }
 
 static int
-usp_sub(equation, np, i)
-token_type	*equation;
-int		*np, i;
+usp_sub (token_type *equation, int *np, int i)
 {
 	int	level;
 	int	j;
@@ -573,9 +545,7 @@ int		*np, i;
  * Return true if equation side is modified.
  */
 int
-unsimp_power(equation, np)
-token_type	*equation;
-int		*np;
+unsimp_power (token_type *equation, int *np)
 {
 	int	modified = false;
 	int	i;
@@ -599,9 +569,7 @@ int		*np;
  * Return true if equation side is modified.
  */
 int
-unsimp2_power(equation, np)
-token_type	*equation;
-int		*np;
+unsimp2_power (token_type *equation, int *np)
 {
 	int	modified = false;
 	int	i;
@@ -615,9 +583,7 @@ int		*np;
 }
 
 int
-usp2_sub(equation, np, i)
-token_type	*equation;
-int		*np, i;
+usp2_sub (token_type *equation, int *np, int i)
 {
 	int	level;
 	int	j, k;
@@ -664,9 +630,7 @@ int		*np, i;
  * attempted to be negated, possibly getting rid of unneeded times -1.
  */
 void
-uf_neg_help(equation, np)
-token_type	*equation;
-int		*np;
+uf_neg_help (token_type *equation, int *np)
 {
 	int	i;
 	int	level;
@@ -707,9 +671,7 @@ int		*np;
  * Return true if equation side was modified.
  */
 int
-patch_root_div(equation, np)
-token_type	*equation;
-int		*np;
+patch_root_div (token_type *equation, int *np)
 {
 	int	i;
 	int	level;

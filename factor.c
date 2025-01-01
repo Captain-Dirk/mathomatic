@@ -2,7 +2,7 @@
  * Mathomatic symbolic factorizing routines, not polynomial factoring.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 #include "includes.h"
@@ -40,11 +40,7 @@ static int fpower_sub(token_type *equation, int *np, int loc, int i1, int n1, in
  * Return true if equation side was modified.
  */
 int
-factor_divide(equation, np, v, d)
-token_type	*equation;
-int		*np;
-long		v;
-double		d;
+factor_divide (token_type *equation, int *np, long v, double d)
 {
 	return fplus_recurse(equation, np, 0, 1, v, d, false, true);
 }
@@ -56,9 +52,7 @@ double		d;
  * Return true if equation side was modified.
  */
 int
-subtract_itself(equation, np)
-token_type	*equation;
-int		*np;
+subtract_itself (token_type *equation, int *np)
 {
 	return fplus_recurse(equation, np, 0, 1, 0L, 0.0, true, false);
 }
@@ -84,11 +78,12 @@ int		*np;
  * Return true if equation side was modified.
  */
 int
-factor_plus(equation, np, v, d)
-token_type	*equation;	/* pointer to beginning of equation side */
-int		*np;		/* pointer to length of equation side */
-long		v;		/* Mathomatic variable */
-double		d;		/* control exponent */
+factor_plus (
+    token_type *equation,	/* pointer to beginning of equation side */
+    int *np,			/* pointer to length of equation side */
+    long v,			/* Mathomatic variable */
+    double d			/* control exponent */
+)
 {
 	return fplus_recurse(equation, np, 0, 1, v, d, false, false);
 }
@@ -100,13 +95,16 @@ double		d;		/* control exponent */
  * Return true if equation side was modified.
  */
 static int
-fplus_recurse(equation, np, loc, level, v, d, whole_flag, div_only)
-token_type	*equation;
-int		*np, loc, level;
-long		v;
-double		d;
-int		whole_flag;	/* factor only whole expressions multiplied by a constant */
-int		div_only;	/* factor only divides */
+fplus_recurse (
+    token_type *equation,
+    int *np,
+    int loc,
+    int level,
+    long v,
+    double d,
+    int whole_flag,	/* factor only whole expressions multiplied by a constant */
+    int div_only	/* factor only divides */
+)
 {
 	int	modified = false;
 	int	i, j, k;
@@ -168,16 +166,20 @@ f_again:
  * Return true if a transformation was made.
  */
 static int
-fplus_sub(equation, np, loc, i1, n1, i2, n2, level, v, d, whole_flag, div_only)
-token_type	*equation;	/* the entire expression */
-int		*np;		/* pointer to length of the entire expression */
-int		loc;		/* index into the beginning of this additive sub-expression */
-int		i1, n1, i2, n2;
-int		level;
-long		v;
-double		d;
-int		whole_flag;	/* factor only whole expressions multiplied by a constant */
-int		div_only;	/* factor only divides */
+fplus_sub (
+    token_type *equation,	/* the entire expression */
+    int *np,			/* pointer to length of the entire expression */
+    int loc,			/* index into the beginning of this additive sub-expression */
+    int i1,
+    int n1,
+    int i2,
+    int n2,
+    int level,
+    long v,
+    double d,
+    int whole_flag,		/* factor only whole expressions multiplied by a constant */
+    int div_only		/* factor only divides */
+)
 {
 	int	e1, e2;
 	int	op1, op2;
@@ -579,17 +581,7 @@ end_mess:
  * with a common base and any exponent.
  */
 static int
-big_fplus(equation, level, diff_sign, sop1, op1, op2, i1, i2, b1, b2, ai, aj, i, j, e1, e2)
-token_type	*equation;
-int		level;
-int		diff_sign;
-int		sop1;
-int		op1, op2;
-int		i1, i2;
-int		b1, b2;
-int		ai, aj;
-int		i, j;
-int		e1, e2;
+big_fplus (token_type *equation, int level, int diff_sign, int sop1, int op1, int op2, int i1, int i2, int b1, int b2, int ai, int aj, int i, int j, int e1, int e2)
 {
 	int	k, l, m, n, o;
 	int	len;
@@ -693,17 +685,13 @@ int		e1, e2;
  * Return true if equation side was modified.
  */
 int
-factor_times(equation, np)
-token_type	*equation;
-int		*np;
+factor_times (token_type *equation, int *np)
 {
 	return ftimes_recurse(equation, np, 0, 1);
 }
 
 static int
-ftimes_recurse(equation, np, loc, level)
-token_type	*equation;
-int		*np, loc, level;
+ftimes_recurse (token_type *equation, int *np, int loc, int level)
 {
 	int	modified = false;
 	int	i, j, k;
@@ -760,9 +748,7 @@ f_again:
 }
 
 static int
-ftimes_sub(equation, np, loc, i1, n1, i2, n2, level)
-token_type	*equation;
-int		*np, loc, i1, n1, i2, n2, level;
+ftimes_sub (token_type *equation, int *np, int loc, int i1, int n1, int i2, int n2, int level)
 {
 	int	e1, e2;
 	int	op1, op2;
@@ -901,17 +887,13 @@ common_base:
  * Return true if equation side was modified.
  */
 int
-factor_power(equation, np)
-token_type	*equation;
-int		*np;
+factor_power (token_type *equation, int *np)
 {
 	return fpower_recurse(equation, np, 0, 1);
 }
 
 static int
-fpower_recurse(equation, np, loc, level)
-token_type	*equation;
-int		*np, loc, level;
+fpower_recurse (token_type *equation, int *np, int loc, int level)
 {
 	int	modified = false;
 	int	i, j, k;
@@ -967,9 +949,7 @@ f_again:
 }
 
 static int
-fpower_sub(equation, np, loc, i1, n1, i2, n2, level)
-token_type	*equation;
-int		*np, loc, i1, n1, i2, n2, level;
+fpower_sub (token_type *equation, int *np, int loc, int i1, int n1, int i2, int n2, int level)
 {
 	int		e1, e2;
 	int		op1, op2;

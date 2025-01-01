@@ -2,7 +2,7 @@
  * Standard routines for Mathomatic.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 #include "includes.h"
@@ -34,8 +34,9 @@ George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
  * but really can go to any file you wish.
  */
 void
-display_startup_message(fp)
-FILE	*fp;	/* output file pointer */
+display_startup_message (
+    FILE *fp	/* output file pointer */
+)
 {
 	long	es_size;
 
@@ -66,8 +67,9 @@ FILE	*fp;	/* output file pointer */
  * Standard function to report an error to the user.
  */
 void
-error(str)
-const char	*str;		/* constant string to display */
+error (
+    const char *str		/* constant string to display */
+)
 {
 	error_str = str;	/* save reference to str, must be a constant string, temporary strings don't work */
 #if	!SILENT && !LIBRARY
@@ -95,8 +97,9 @@ reset_error(void)
  * A warning is less serious than an error.
  */
 void
-warning(str)
-const char	*str;		/* constant string to display */
+warning (
+    const char *str		/* constant string to display */
+)
 {
 	int	already_warned = false;
 
@@ -131,8 +134,9 @@ error_huge(void)
  * There is no return.
  */
 void
-error_bug(str)
-const char	*str;	/* constant string to display */
+error_bug (
+    const char *str		/* constant string to display */
+)
 {
 /* Return and display the passed error message in str. */
 	error(str);	/* str must be a constant string, temporary strings don't work */
@@ -227,7 +231,7 @@ malloc_vscreen(void)
 			if (vscreen[i]) {
 				free(vscreen[i]);
 			}
-			vscreen[i] = malloc(current_columns + 1);
+			vscreen[i] = (char *)malloc(current_columns + 1);
 			if (vscreen[i] == NULL) {
 				error(_("Out of memory (can't malloc(3))."));
 				current_columns = 0;
@@ -277,7 +281,7 @@ init_mem(void)
  * all the memory it allocated is released by the operating system.
  * Inclusion of this routine was requested by Tam Hanna for use with Symbian OS.
  */
-void
+EXPORT void
 free_mem(void)
 {
 	int	i;
@@ -424,8 +428,7 @@ set_sign_array(void)
  * Mark it used.
  */
 int
-next_sign(vp)
-long	*vp;
+next_sign (long *vp)
 {
 	int	i;
 
@@ -473,8 +476,9 @@ clear_all(void)
  * zeroing and allocating if necessary.
  */
 int
-alloc_espace(i)
-int	i;	/* equation space number */
+alloc_espace (
+    int i	/* equation space number */
+)
 {
 	if (i < 0 || i >= N_EQUATIONS)
 		return false;
@@ -503,8 +507,9 @@ int	i;	/* equation space number */
  * Returns true if successful.
  */
 int
-alloc_to_espace(en)
-int	en;	/* equation space number */
+alloc_to_espace (
+    int en	/* equation space number */
+)
 {
 	if (en < 0 || en >= N_EQUATIONS)
 		return false;
@@ -596,8 +601,10 @@ next_espace(void)
  * "dest" is overwritten.
  */
 void
-copy_espace(src, dest)
-int	src, dest;	/* equation space numbers */
+copy_espace (
+    int src,
+    int dest	/* equation space numbers */
+)
 {
 	if (src == dest) {
 #if	DEBUG
@@ -615,8 +622,7 @@ int	src, dest;	/* equation space numbers */
  * Return true if equation space "i" is a valid equation solved for a normal variable.
  */
 int
-solved_equation(i)
-int	i;
+solved_equation (int i)
 {
 	if (empty_equation_space(i))
 		return false;
@@ -633,10 +639,11 @@ int	i;
  * Return the number of times variable "v" is found in an expression.
  */
 int
-found_var(p1, n, v)
-token_type	*p1;	/* expression pointer */
-int		n;	/* expression length */
-long		v;	/* standard Mathomatic variable */
+found_var (
+    token_type *p1,	/* expression pointer */
+    int n,		/* expression length */
+    long v		/* standard Mathomatic variable */
+)
 {
 	int	j;
 	int	count = 0;
@@ -655,9 +662,10 @@ long		v;	/* standard Mathomatic variable */
  * Return true if variable "v" exists in equation space "i".
  */
 int
-var_in_equation(i, v)
-int	i;	/* equation space number */
-long	v;	/* standard Mathomatic variable */
+var_in_equation (
+    int i,	/* equation space number */
+    long v	/* standard Mathomatic variable */
+)
 {
 	if (empty_equation_space(i))
 		return false;
@@ -678,9 +686,7 @@ long	v;	/* standard Mathomatic variable */
  * If found, return true with cur_equation set to the equation space the variable is found in.
  */
 int
-search_all_for_var(v, forward_direction)
-long	v;
-int	forward_direction;
+search_all_for_var (long v, int forward_direction)
 {
 	int	i, n;
 
@@ -709,9 +715,11 @@ int	forward_direction;
  * Replace all occurrences of variable from_v with to_v in an equation space.
  */
 void
-rename_var_in_es(en, from_v, to_v)
-int	en;	 	/* equation space number */
-long	from_v, to_v;	/* Mathomatic variables */
+rename_var_in_es (
+    int en,	 	/* equation space number */
+    long from_v,
+    long to_v		/* Mathomatic variables */
+)
 {
 	int	i;
 
@@ -738,12 +746,13 @@ long	from_v, to_v;	/* Mathomatic variables */
  * Return true if something was substituted.
  */
 int
-subst_var_with_exp(equation, np, expression, len, v)
-token_type	*equation;	/* equation side pointer */
-int		*np;		/* pointer to equation side length */
-token_type	*expression;	/* expression pointer */
-int		len;		/* expression length */
-long		v;		/* variable to substitute with expression */
+subst_var_with_exp (
+    token_type *equation,	/* equation side pointer */
+    int *np,			/* pointer to equation side length */
+    token_type *expression,	/* expression pointer */
+    int len,			/* expression length */
+    long v			/* variable to substitute with expression */
+)
 {
 	int	j, k;
 	int	level;
@@ -779,9 +788,10 @@ long		v;		/* variable to substitute with expression */
  * Return the base (minimum) parentheses level encountered in a Mathomatic "expression".
  */
 int
-min_level(expression, n)
-token_type	*expression;	/* expression pointer */
-int		n;		/* expression length */
+min_level (
+    token_type *expression,	/* expression pointer */
+    int n			/* expression length */
+)
 {
 	int		min1;
 	token_type	*p1, *ep;
@@ -817,8 +827,7 @@ int		n;		/* expression length */
  * Return -1 on error.
  */
 int
-get_default_en(cp)
-char	*cp;
+get_default_en (char *cp)
 {
 	int	i;
 
@@ -842,9 +851,10 @@ char	*cp;
  * Return true if successful.
  */
 int
-get_expr(equation, np)
-token_type	*equation;	/* where the parsed expression is stored (equation side) */
-int		*np;		/* pointer to the returned parsed expression length */
+get_expr (
+    token_type *equation,	/* where the parsed expression is stored (equation side) */
+    int *np			/* pointer to the returned parsed expression length */
+)
 {
 	char	buf[DEFAULT_N_TOKENS];
 	char	*cp;
@@ -876,8 +886,9 @@ int		*np;		/* pointer to the returned parsed expression length */
  * Return true if successful.
  */
 int
-prompt_var(vp)
-long	*vp;	/* pointer to the returned variable */
+prompt_var (
+    long *vp	/* pointer to the returned variable */
+)
 {
 	char	buf[MAX_CMD_LEN];
 	char	*cp;
@@ -902,8 +913,9 @@ long	*vp;	/* pointer to the returned variable */
  * Return true and display a message if equation "i" is undefined.
  */
 int
-not_defined(i)
-int	i;	/* equation space number */
+not_defined (
+    int i	/* equation space number */
+)
 {
 	if (i < 0 || i >= n_equations) {
 		error(_("Invalid equation number."));
@@ -950,9 +962,10 @@ current_not_defined(void)
  * Returns "string" if successful or NULL on error.
  */
 char *
-get_string(string, n)
-char	*string;	/* storage for input string */
-int	n;		/* maximum size of "string" in bytes */
+get_string (
+    char *string,	/* storage for input string */
+    int n		/* maximum size of "string" in bytes */
+)
 {
 #if	LIBRARY
 	error(_("Library usage error. Input requested, possibly due to missing command-line argument."));
@@ -1064,8 +1077,9 @@ get_yes_no(void)
  * Return true if successful.
  */
 int
-return_result(en)
-int	en;	/* equation space number the result is in */
+return_result (
+    int en	/* equation space number the result is in */
+)
 {
 	if (empty_equation_space(en)) {
 		return false;
@@ -1113,8 +1127,7 @@ free_result_str(void)
  * Return true if the first word in the passed string is "all".
  */
 int
-is_all(cp)
-char	*cp;
+is_all (char *cp)
 {
 	return(strcmp_tospace(cp, "all") == 0);
 }
@@ -1130,9 +1143,7 @@ char	*cp;
  * and ending equation number in "*jp".
  */
 int
-get_range(cpp, ip, jp)
-char	**cpp;
-int	*ip, *jp;
+get_range (char **cpp, int *ip, int *jp)
 {
 	int	i;
 	char	*cp;
@@ -1222,8 +1233,9 @@ use_current:
  * Otherwise just returns false indicating everything is OK.
  */
 int
-extra_characters(cp)
-char	*cp;	/* command line string */
+extra_characters (
+    char *cp	/* command line string */
+)
 {
 	if (cp) {
 		cp = skip_comma_space(cp);
@@ -1241,9 +1253,7 @@ char	*cp;	/* command line string */
  * otherwise display an error message and return false.
  */
 int
-get_range_eol(cpp, ip, jp)
-char	**cpp;
-int	*ip, *jp;
+get_range_eol (char **cpp, int *ip, int *jp)
 {
 	if (!get_range(cpp, ip, jp)) {
 		return false;
@@ -1258,8 +1268,9 @@ int	*ip, *jp;
  * Skip over space characters.
  */
 char *
-skip_space(cp)
-char	*cp;	/* character pointer */
+skip_space (
+    char *cp	/* character pointer */
+)
 {
 	if (cp) {
 		while (*cp && isspace(*cp))
@@ -1272,8 +1283,9 @@ char	*cp;	/* character pointer */
  * Skip over a possible comma and space characters.
  */
 char *
-skip_comma_space(cp)
-char	*cp;	/* character pointer */
+skip_comma_space (
+    char *cp	/* character pointer */
+)
 {
 	if (cp) {
 		cp = skip_space(cp);
@@ -1288,8 +1300,7 @@ char	*cp;	/* character pointer */
  * Skips trailing spaces or commas.
  */
 long
-decstrtol(cp, cpp)
-char	*cp, **cpp;
+decstrtol (char *cp, char **cpp)
 {
 	long	l;
 
@@ -1304,8 +1315,7 @@ char	*cp, **cpp;
  * Return true if passed character is a Mathomatic command parameter delimiter.
  */
 int
-isdelimiter(ch)
-int	ch;
+isdelimiter (int ch)
 {
 	return(isspace(ch) || ch == ',' || ch == '=');
 }
@@ -1317,8 +1327,7 @@ int	ch;
  * Returns a string (character pointer) to the next parameter.
  */
 char *
-skip_param(cp)
-char	*cp;
+skip_param (char *cp)
 {
 	if (cp) {
 		while (*cp && (!isascii(*cp) || !isdelimiter(*cp))) {
@@ -1339,8 +1348,7 @@ char	*cp;
  * Returns zero on exact match, otherwise non-zero if strings are different.
  */
 int
-strcmp_tospace(cp1, cp2)
-char	*cp1, *cp2;
+strcmp_tospace (char *cp1, char *cp2)
 {
 	char	*cp1a, *cp2a;
 
@@ -1359,10 +1367,11 @@ char	*cp1, *cp2;
  * Return the number of "level" additive type operators.
  */
 int
-level_plus_count(p1, n1, level)
-token_type	*p1;	/* expression pointer */
-int		n1;	/* expression length */
-int		level;	/* parentheses level number to check */
+level_plus_count (
+    token_type *p1,	/* expression pointer */
+    int n1,		/* expression length */
+    int level		/* parentheses level number to check */
+)
 {
 	int	i;
 	int	count = 0;
@@ -1383,9 +1392,10 @@ int		level;	/* parentheses level number to check */
  * Return the number of level 1 additive type operators.
  */
 int
-level1_plus_count(p1, n1)
-token_type	*p1;	/* expression pointer */
-int		n1;	/* expression length */
+level1_plus_count (
+    token_type *p1,	/* expression pointer */
+    int n1		/* expression length */
+)
 {
 	return level_plus_count(p1, n1, min_level(p1, n1));
 }
@@ -1394,9 +1404,10 @@ int		n1;	/* expression length */
  * Return the count of variables in an expression.
  */
 int
-var_count(p1, n1)
-token_type	*p1;	/* expression pointer */
-int		n1;	/* expression length */
+var_count (
+    token_type *p1,	/* expression pointer */
+    int n1		/* expression length */
+)
 {
 	int	i;
 	int	count = 0;
@@ -1415,10 +1426,11 @@ int		n1;	/* expression length */
  * Return true if expression contains no variables.
  */
 int
-no_vars(source, n, vp)
-token_type	*source;	/* expression pointer */
-int		n;		/* expression length */
-long		*vp;		/* variable pointer */
+no_vars (
+    token_type *source,	/* expression pointer */
+    int n,		/* expression length */
+    long *vp		/* variable pointer */
+)
 {
 	int	j;
 	int	found = false;
@@ -1448,9 +1460,10 @@ long		*vp;		/* variable pointer */
  * Return true if expression contains infinity or NaN (Not a Number).
  */
 int
-exp_contains_infinity(p1, n1)
-token_type	*p1;	/* expression pointer */
-int		n1;	/* expression length */
+exp_contains_infinity (
+    token_type *p1,	/* expression pointer */
+    int n1		/* expression length */
+)
 {
 	int	i;
 
@@ -1466,9 +1479,10 @@ int		n1;	/* expression length */
  * Return true if expression contains NaN (Not a Number).
  */
 int
-exp_contains_nan(p1, n1)
-token_type	*p1;	/* expression pointer */
-int		n1;	/* expression length */
+exp_contains_nan (
+    token_type *p1,	/* expression pointer */
+    int n1		/* expression length */
+)
 {
 	int	i;
 
@@ -1485,9 +1499,10 @@ int		n1;	/* expression length */
  * Pseudo-variables e, pi, i, and sign are considered numeric.
  */
 int
-exp_is_numeric(p1, n1)
-token_type	*p1;	/* expression pointer */
-int		n1;	/* expression length */
+exp_is_numeric (
+    token_type *p1,	/* expression pointer */
+    int n1		/* expression length */
+)
 {
 	int	i;
 
@@ -1504,9 +1519,10 @@ int		n1;	/* expression length */
  * Return true if it does.
  */
 int
-exp_is_absolute(p1, n1)
-token_type	*p1;	/* expression pointer */
-int		n1;	/* expression length */
+exp_is_absolute (
+    token_type *p1,	/* expression pointer */
+    int n1		/* expression length */
+)
 {
 	int	i;
 	int	level;
@@ -1531,8 +1547,7 @@ int		n1;	/* expression length */
  * Display a warning and return true if passed double is 0.
  */
 int
-check_divide_by_zero(denominator)
-double	denominator;
+check_divide_by_zero (double denominator)
 {
 	if (denominator == 0) {
 		warning(_("Division by zero."));
@@ -1541,14 +1556,15 @@ double	denominator;
 	return false;
 }
 
-#if	CYGWIN || MINGW
+#ifdef	_WIN32
 /*
  * dirname(3) function for Microsoft Windows.
  * dirname(3) strips the non-directory suffix from a filename.
  */
 char *
-dirname_win(cp)
-char	*cp;	/* string containing filename to modify */
+dirname_win (
+    char *cp	/* string containing filename to modify */
+)
 {
 	int	i;
 
@@ -1572,9 +1588,10 @@ char	*cp;	/* string containing filename to modify */
  * otherwise return true.
  */
 int
-load_rc(return_true_if_no_file, ofp)
-int	return_true_if_no_file;
-FILE	*ofp;	/* if non-NULL, display each line as read in to this file */
+load_rc (
+    int return_true_if_no_file,
+    FILE *ofp		/* if non-NULL, display each line as read in to this file */
+)
 {
 	FILE	*fp = NULL;
 	char	buf[MAX_CMD_LEN];
@@ -1586,7 +1603,7 @@ FILE	*ofp;	/* if non-NULL, display each line as read in to this file */
 		snprintf(rc_file, sizeof(rc_file), "%s/%s", cp, ".mathomaticrc");
 		fp = fopen(rc_file, "r");
 	}
-#if	CYGWIN || MINGW
+#ifdef	_WIN32
 	if (fp == NULL && cp) {
 		snprintf(rc_file, sizeof(rc_file), "%s/%s", cp, "mathomatic.rc");
 		fp = fopen(rc_file, "r");
@@ -1629,8 +1646,7 @@ FILE	*ofp;	/* if non-NULL, display each line as read in to this file */
  * otherwise return true.
  */
 int
-display_rc(ofp)
-FILE	*ofp;
+display_rc (FILE *ofp)
 {
 	FILE	*fp = NULL;
 	char	buf[MAX_CMD_LEN];

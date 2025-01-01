@@ -2,7 +2,7 @@
  * Mathomatic floating point constant factorizing routines.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 #include "includes.h"
@@ -45,8 +45,7 @@ static double skip_multiples[] = {	/* Additive array that skips over multiples o
  * Return true if successful.
  */
 int
-factor_one(value)
-double	value;
+factor_one (double value)
 {
 	int	i;
 	double	d;
@@ -101,8 +100,7 @@ double	value;
  * If so, save it and remove it from "nn".
  */
 static void
-try_factor(arg)
-double	arg;
+try_factor (double arg)
 {
 #if	DEBUG
 	if (fmod(arg, 1.0) != 0.0) {
@@ -223,9 +221,7 @@ is_prime(void)
  * Return true if the equation side was modified.
  */
 int
-factor_int(equation, np)
-token_type	*equation;
-int		*np;
+factor_int (token_type *equation, int *np)
 {
 	int	i, j;
 	int	xsize;
@@ -294,8 +290,9 @@ int		*np;
  * Return true if something was factored.
  */
 int
-factor_int_equation(n)
-int	n;	/* equation space number */
+factor_int_equation (
+    int n	/* equation space number */
+)
 {
 	int	rv = false;
 
@@ -312,10 +309,7 @@ int	n;	/* equation space number */
  * List an equation side with optional integer factoring.
  */
 int
-list_factor(equation, np, factor_flag)
-token_type	*equation;
-int		*np;
-int		factor_flag;
+list_factor (token_type *equation, int *np, int factor_flag)
 {
 	if (factor_flag || factor_int_flag) {
 		factor_int(equation, np);
@@ -352,10 +346,11 @@ int		factor_flag;
  * Return true if equation side was modified.
  */
 int
-factor_constants(equation, np, level_code)
-token_type	*equation;	/* pointer to the beginning of equation side */
-int		*np;		/* pointer to length of equation side */
-int		level_code;	/* see above */
+factor_constants (
+    token_type *equation,	/* pointer to the beginning of equation side */
+    int *np,			/* pointer to length of equation side */
+    int level_code		/* see above */
+)
 {
 	if (level_code == 3)
 		return false;
@@ -363,10 +358,7 @@ int		level_code;	/* see above */
 }
 
 static int
-fc_recurse(equation, np, loc, level, level_code)
-token_type	*equation;
-int		*np, loc, level;
-int		level_code;
+fc_recurse (token_type *equation, int *np, int loc, int level, int level_code)
 {
 	int	i, j, k, eloc;
 	int	op;

@@ -2,7 +2,7 @@
  * Mathomatic global variable extern definitions, from file "globals.c".
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 extern int		n_tokens;
@@ -85,7 +85,7 @@ extern int		sign_cmp_flag;
 extern double		small_epsilon;
 extern double		epsilon;
 
-extern char		*prog_name;
+extern const char	prog_name[];
 extern char		*var_names[MAX_VAR_NAMES];
 extern char		var_str[MAX_VAR_LEN+80];
 extern char		prompt_str[MAX_PROMPT_LEN];
@@ -93,7 +93,7 @@ extern char		prompt_str[MAX_PROMPT_LEN];
 extern char		rc_file[MAX_CMD_LEN];
 #endif
 
-#if	CYGWIN || MINGW
+#ifdef	_WIN32
 extern char		*dir_path;
 #endif
 #if	READLINE || EDITLINE

@@ -2,7 +2,7 @@
  * Mathomatic commands that don't belong anywhere else.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 #include "includes.h"
@@ -47,8 +47,9 @@ static int	last_temp_var = 0;
  * All command functions like this return true if successful, or false for failure.
  */
 int
-plot_cmd(cp)
-char	*cp;	/* the command-line argument */
+plot_cmd (
+    char *cp	/* the command-line argument */
+)
 {
 #define	APPEND(str)	{ if (strlen(str) + cl1_len < sizeof(cl1)) { strcpy(&cl1[cl1_len], str); cl1_len += strlen(str); } else warning(_("Expression too large to plot; omitted.")); }
 
@@ -205,8 +206,9 @@ char	*cp;	/* the command-line argument */
  * All commands return true if successful.
  */
 int
-version_cmd(cp)
-char	*cp;	/* the command-line argument */
+version_cmd (
+    char *cp	/* the command-line argument */
+)
 {
 	int	rv = true;		/* return value */
 	int	status_flag = false;
@@ -258,8 +260,7 @@ max_memory_usage(void)
  * Return true if successful.
  */
 int
-show_status(ofp)
-FILE	*ofp;
+show_status (FILE *ofp)
 {
 #if	SHOW_RESOURCES
 	struct rusage	usage_local;
@@ -267,7 +268,7 @@ FILE	*ofp;
 	if (getrusage(RUSAGE_SELF, &usage_local) == 0) {
 		fprintf(ofp, _("Total CPU usage, user time: %g seconds, system time: %g seconds.\n"),
 		    (double) usage_local.ru_utime.tv_sec + ((double) usage_local.ru_utime.tv_usec / 1000000.0),
-                    (double) usage_local.ru_stime.tv_sec + ((double) usage_local.ru_stime.tv_usec / 1000000.0));
+		    (double) usage_local.ru_stime.tv_sec + ((double) usage_local.ru_stime.tv_usec / 1000000.0));
 		if (usage_local.ru_ixrss == 0 && usage_local.ru_idrss == 0 && usage_local.ru_isrss == 0) {
 			if (usage_local.ru_maxrss)
 				fprintf(ofp, _("Total RSS size: %ld kilobytes.\n"), usage_local.ru_maxrss);
@@ -362,7 +363,7 @@ version_report(void)
 #if	VALGRIND
 	fprintf(gfp, "VALGRIND ");
 #endif
-#if     SHOW_RESOURCES
+#if	SHOW_RESOURCES
 	fprintf(gfp, "SHOW_RESOURCES ");
 #endif
 
@@ -444,8 +445,7 @@ version_report(void)
  * or the result contains infinity or NaN).
  */
 int
-solve_cmd(cp)
-char	*cp;
+solve_cmd (char *cp)
 {
 	int		i, j, k;
 	int		start, stop;
@@ -566,7 +566,7 @@ char	*cp;
 check_result:
 				contains_infinity = (exp_contains_infinity(lhs[i], n_lhs[i])
 				    || exp_contains_infinity(rhs[i], n_rhs[i]));
-	                        if (se_compare(lhs[i], n_lhs[i], rhs[i], n_rhs[i], &diff_sign) && (want.kind != VARIABLE || !diff_sign)) {
+				if (se_compare(lhs[i], n_lhs[i], rhs[i], n_rhs[i], &diff_sign) && (want.kind != VARIABLE || !diff_sign)) {
 					if (want.kind != VARIABLE) {
 						fprintf(gfp, _("This equation is an identity.\n"));
 					} else if (plural_flag)
@@ -637,8 +637,7 @@ fail:
  * The sum command.
  */
 int
-sum_cmd(cp)
-char	*cp;
+sum_cmd (char *cp)
 {
 	return sum_product(cp, SUM_COMMAND);
 }
@@ -647,8 +646,7 @@ char	*cp;
  * The product command.
  */
 int
-product_cmd(cp)
-char	*cp;
+product_cmd (char *cp)
 {
 	return sum_product(cp, PRODUCT_COMMAND);
 }
@@ -657,8 +655,7 @@ char	*cp;
  * The for command.
  */
 int
-for_cmd(cp)
-char	*cp;
+for_cmd (char *cp)
 {
 	return sum_product(cp, FOR_COMMAND);
 }
@@ -667,9 +664,10 @@ char	*cp;
  * Common function for the sum and product commands.
  */
 static int
-sum_product(cp, current_function)
-char			*cp;		/* the command-line */
-enum spf_function	current_function;
+sum_product (
+    char *cp,		/* the command-line */
+    enum spf_function current_function
+)
 {
 	int		i;
 	long		v = 0;			/* Mathomatic variable */
@@ -843,10 +841,11 @@ enum spf_function	current_function;
  * It should be called repeatedly until it returns false.
  */
 static int
-find_more(equation, np, en)
-token_type	*equation;	/* expression to search */
-int		*np;		/* pointer to length of expression */
-int		en;		/* equation space number */
+find_more (
+    token_type *equation,	/* expression to search */
+    int *np,			/* pointer to length of expression */
+    int en			/* equation space number */
+)
 {
 	int	i, j, k;
 	int	level;
@@ -899,9 +898,7 @@ int		en;		/* equation space number */
  * It should be called repeatedly until it returns false.
  */
 static int
-opt_es(equation, np)
-token_type	*equation;
-int		*np;
+opt_es (token_type *equation, int *np)
 {
 	int	i, j, k, i1, i2, jj1, k1;
 	int	level, level1;
@@ -1004,8 +1001,7 @@ int		*np;
  * The optimize command.
  */
 int
-optimize_cmd(cp)
-char	*cp;
+optimize_cmd (char *cp)
 {
 	int	i, j, k, i1;
 	int	start, stop;
@@ -1122,8 +1118,7 @@ char	*cp;
  * The push command.
  */
 int
-push_cmd(cp)
-char	*cp;
+push_cmd (char *cp)
 {
 	int	start, stop;
 	int	k;
@@ -1162,7 +1157,7 @@ push_text:
 	if (*cp_start) {
 		add_history(cp_start);
 		last_history_string = NULL;
-		debug_string(0, _("Text string pushed.  Press the UP key to access."));
+		debug_string(0, _("Text string pushed.	Press the UP key to access."));
 		return true;
 	}
 	return false;
@@ -1174,8 +1169,9 @@ push_text:
  * Return true if successful.
  */
 int
-push_en(en)
-int	en;	/* equation space number to push */
+push_en (
+    int en	/* equation space number to push */
+)
 {
 	char	*cp;
 
@@ -1198,8 +1194,9 @@ int	en;	/* equation space number to push */
  * Return true if successful.
  */
 int
-output_current_directory(ofp)
-FILE	*ofp;	/* output file pointer */
+output_current_directory (
+    FILE *ofp	/* output file pointer */
+)
 {
 #if	!SECURE
 	char	buf[MAX_CMD_LEN];
@@ -1217,9 +1214,7 @@ FILE	*ofp;	/* output file pointer */
 }
 
 int
-fprintf_escaped(ofp, cp)
-FILE	*ofp;
-char	*cp;
+fprintf_escaped (FILE *ofp, char *cp)
 {
 	int	len = 0;
 
@@ -1238,9 +1233,10 @@ char	*cp;
  * If all_set_options, include options you don't want to save.
  */
 void
-output_options(ofp, all_set_options)
-FILE	*ofp;	/* output file pointer */
-int	all_set_options;
+output_options (
+    FILE *ofp,	/* output file pointer */
+    int all_set_options
+)
 {
 	if (ofp == NULL)
 		return;
@@ -1384,8 +1380,7 @@ int	all_set_options;
  * Skip over a yes/no indicator and return true if *cpp pointed to a negative word.
  */
 int
-skip_no(cpp)
-char	**cpp;
+skip_no (char **cpp)
 {
 	if (strcmp_tospace(*cpp, "no") == 0
 	    || strcmp_tospace(*cpp, "not") == 0
@@ -1410,8 +1405,7 @@ char	**cpp;
  * Return true if successful.
  */
 int
-save_set_options(cp)
-char	*cp;
+save_set_options (char *cp)
 {
 	FILE	*fp;
 	int	pre_existing;
@@ -1454,9 +1448,7 @@ char	*cp;
  * Return false if error.
  */
 int
-set_options(cp, loading_startup_file)
-char	*cp;
-int	loading_startup_file;
+set_options (char *cp, int loading_startup_file)
 {
 	int	i;
 	int	negate;
@@ -1472,7 +1464,7 @@ try_next_param:
 		cp = skip_param(cp);
 #if	!SECURE
 		if (security_level < 3) {
-	 		if (*cp == '\0') {
+			if (*cp == '\0') {
 				cp1 = getenv("HOME");
 				if (cp1 == NULL) {
 					error(_("HOME environment variable not set."));
@@ -1644,7 +1636,7 @@ try_next_param:
 				error(_("Please specify the fractions display mode number (0, 1, or 2)."));
 				printf(_("0 means do not display any constants as fractions,\n"));
 				printf(_("1 means display some constants as \"simple\" fractions,\n"));
-                		printf(_("2 means display some constants as \"mixed\" or simple fractions.\n"));
+				printf(_("2 means display some constants as \"mixed\" or simple fractions.\n"));
 				printf(_("Current value is %d.\n"), fractions_display);
 				return false;
 			}
@@ -1715,7 +1707,7 @@ try_next_param:
 				printf(_("* \"Python\" programming language mode 1:\n"));
 				printf(_("  1 means computed result always has same sign as the divisor;\n"));
 				printf(_("* Mathematically correct mode 2 for perfect simplification:\n"));
-                		printf(_("  2 means the result is always \"positive\" or zero (\"normal\" mode).\n\n"));
+				printf(_("  2 means the result is always \"positive\" or zero (\"normal\" mode).\n\n"));
 				printf(_("The current value is %d ("), modulus_mode);
 				switch (modulus_mode) {
 				case 0:
@@ -1881,8 +1873,7 @@ check_return:
  * The set command.
  */
 int
-set_cmd(cp)
-char	*cp;
+set_cmd (char *cp)
 {
 	int	rv;
 
@@ -1905,8 +1896,7 @@ char	*cp;
  * The echo command.
  */
 int
-echo_cmd(cp)
-char	*cp;
+echo_cmd (char *cp)
 {
 	int	i;
 	int	len = 0;
@@ -1942,8 +1932,7 @@ char	*cp;
  * The pause command.
  */
 int
-pause_cmd(cp)
-char	*cp;
+pause_cmd (char *cp)
 {
 #if	LIBRARY
 	return true;
@@ -1979,8 +1968,7 @@ char	*cp;
  * The copy command.
  */
 int
-copy_cmd(cp)
-char	*cp;
+copy_cmd (char *cp)
 {
 	int	i, j, k;
 	int	i1;
@@ -2028,9 +2016,10 @@ char	*cp;
  * Common function for the imaginary and real commands.
  */
 static int
-complex_func(cp, imag_flag)
-char	*cp;		/* the command-line */
-int	imag_flag;	/* if true, copy the imaginary part, otherwise copy the real part */
+complex_func (
+    char *cp,		/* the command-line */
+    int imag_flag	/* if true, copy the imaginary part, otherwise copy the real part */
+)
 {
 	int		i, j, k;
 	int		beg;
@@ -2124,8 +2113,7 @@ int	imag_flag;	/* if true, copy the imaginary part, otherwise copy the real part
  * The real command.
  */
 int
-real_cmd(cp)
-char	*cp;
+real_cmd (char *cp)
 {
 	return complex_func(cp, false);
 }
@@ -2134,8 +2122,7 @@ char	*cp;
  * The imaginary command.
  */
 int
-imaginary_cmd(cp)
-char	*cp;
+imaginary_cmd (char *cp)
 {
 	return complex_func(cp, true);
 }
@@ -2145,8 +2132,7 @@ char	*cp;
  * The tally command.
  */
 int
-tally_cmd(cp)
-char	*cp;
+tally_cmd (char *cp)
 {
 	int	i, k, first, last;
 	double	count = 0.0;
@@ -2286,8 +2272,7 @@ char	*cp;
  * The calculate command.
  */
 int
-calculate_cmd(cp)
-char	*cp;
+calculate_cmd (char *cp)
 {
 	int		i, k1, k;
 	int		first, last;
@@ -2310,7 +2295,7 @@ char	*cp;
 	}
 	if (!get_range(&cp, &first, &last)) {
 		return false;
-	} 
+	}
 	if (*cp) {
 		cp = parse_var2(&it_v, cp);
 		if (cp == NULL) {
@@ -2504,8 +2489,7 @@ calc_again:
  * The clear command.
  */
 int
-clear_cmd(cp)
-char	*cp;
+clear_cmd (char *cp)
 {
 	int	i, j;
 	char	*cp1;
@@ -2536,9 +2520,7 @@ char	*cp;
  * Compare the Right Hand Sides of two equation spaces.
  */
 static int
-compare_rhs(i, j, diff_signp)
-int	i, j;
-int	*diff_signp;
+compare_rhs (int i, int j, int *diff_signp)
 {
 	int	rv;
 
@@ -2562,8 +2544,10 @@ int	*diff_signp;
  * Return 1 if identical.  Return -1 if they are expressions that differ only in sign.
  */
 int
-compare_es(i, j)
-int	i, j;	/* equation space numbers */
+compare_es (
+    int i,
+    int j	/* equation space numbers */
+)
 {
 	int	rv;
 	int	diff_sign_lhs, diff_sign_rhs;
@@ -2598,8 +2582,7 @@ int	i, j;	/* equation space numbers */
  * The compare command.
  */
 int
-compare_cmd(cp)
-char	*cp;
+compare_cmd (char *cp)
 {
 	int		i, j;
 	int		diff_sign;
@@ -2831,8 +2814,7 @@ times_neg1:
  * Return true if a fraction was displayed.
  */
 int
-display_fraction(value)
-double	value;
+display_fraction (double value)
 {
 	double	d4, d5;
 	int	rv = false;
@@ -2851,8 +2833,7 @@ double	value;
  * The divide command.
  */
 int
-divide_cmd(cp)
-char	*cp;
+divide_cmd (char *cp)
 {
 	long		v = 0, v_tmp;		/* Mathomatic variables */
 	int		i, j;
@@ -3034,8 +3015,7 @@ do_repeat:
  * The eliminate command.
  */
 int
-eliminate_cmd(cp)
-char	*cp;
+eliminate_cmd (char *cp)
 {
 	long	v, last_v, v1, va[MAX_VARS];		/* Mathomatic variables */
 	int	vc = 0;					/* variable count */
@@ -3166,9 +3146,10 @@ next_var:
  * into all occurrences of v in the current equation, then simplify.
  */
 static int
-elim_sub(i, v)
-int	i;	/* equation number */
-long	v;	/* Mathomatic variable */
+elim_sub (
+    int i,	/* equation number */
+    long v	/* Mathomatic variable */
+)
 {
 	token_type	want;
 	int		solved;
@@ -3210,8 +3191,7 @@ long	v;	/* Mathomatic variable */
  * Return number of expressions displayed.
  */
 int
-display_cmd(cp)
-char	*cp;
+display_cmd (char *cp)
 {
 	int	i, j;
 	char	*cp1;
@@ -3260,7 +3240,7 @@ char	*cp;
 					factor_int_equation(i);
 				}
 				blt(jmp_save, save_save, sizeof(jmp_save));
-#if     LIBRARY
+#if	LIBRARY
 				free_result_str();
 				result_str = flist_equation_string(i);
 				if (result_str == NULL)
@@ -3291,14 +3271,13 @@ char	*cp;
  * The list command.
  */
 int
-list_cmd(cp)
-char	*cp;
+list_cmd (char *cp)
 {
 	int	k;
 	int	first, last;
 	char	*cp1;
 	int	export_flag = 0;
-#if     SHELL_OUT
+#if	SHELL_OUT
 	char	cl[MAX_CMD_LEN];
 	int	primes_flag = false;
 	int	ev;	/* exit value */
@@ -3316,13 +3295,13 @@ char	*cp;
 	} else if (strncasecmp(cp, "hexadecimal", 3) == 0) {
 		export_flag = 4;
 		cp = skip_param(cp);
-#if     SHELL_OUT
+#if	SHELL_OUT
 	} else if (strncasecmp(cp, "primes", 5) == 0) {
 		primes_flag = true;
 		cp = skip_param(cp);
 #endif
 	}
-#if     SHELL_OUT
+#if	SHELL_OUT
 	if (primes_flag) {
 		if (gfp && gfp_filename && gfp_filename[0]) {
 			if (snprintf(cl, sizeof(cl), "matho-primes -u %s >%s%s", cp, gfp_append_flag ? ">" : "", gfp_filename) >= sizeof(cl)) {
@@ -3377,8 +3356,7 @@ char	*cp;
  * The code command.
  */
 int
-code_cmd(cp)
-char	*cp;
+code_cmd (char *cp)
 {
 	int			i, j, k;
 	int			li, ri;
@@ -3473,10 +3451,10 @@ char	*cp;
 /*
  * Compare function for qsort(3).
  */
-static int
-vcmp(p1, p2)
-sort_type	*p1, *p2;
+static int _cdecl
+cmds_vcmp (void const *v1, void const *v2)
 {
+	sort_type const *p1 = (sort_type const *)v1, *p2 = (sort_type const *)v2;
 	if (p2->count == p1->count) {
 		if (p1->v < p2->v)
 			return -1;
@@ -3491,8 +3469,7 @@ sort_type	*p1, *p2;
  * The variables command.
  */
 int
-variables_cmd(cp)
-char	*cp;
+variables_cmd (char *cp)
 {
 	int			start, stop;
 	int			k;
@@ -3502,7 +3479,7 @@ char	*cp;
 	sort_type		va[MAX_VARS];		/* variable array */
 	token_type		*p1;
 	int			n1;
-	enum language_list	lang_code = 0;		/* default to no programming language */
+	enum language_list	lang_code = (enum language_list)0; /* default to no programming language */
 	int			int_flag = false, imag_flag = false, count_flag = false, not_complex = false;
 	char			imag_array[N_EQUATIONS];
 	char			*range_start, *cp1;
@@ -3617,13 +3594,13 @@ char	*cp;
 	}
 	if (vc <= 0) {
 		if (lang_code == 0) {
-			error(_("Expression is numeric.  No normal variables found."));
+			error(_("Expression is numeric.	 No normal variables found."));
 			return false;
 		} else {
 			return true;
 		}
 	}
-	qsort((char *) va, vc, sizeof(*va), vcmp);
+	qsort((char *) va, vc, sizeof(*va), cmds_vcmp);
 	for (i1 = 0; i1 < vc; i1++) {
 		if (lang_code && va[i1].v < SIGN) {
 			continue;
@@ -3688,8 +3665,7 @@ char	*cp;
  * The approximate command.
  */
 int
-approximate_cmd(cp)
-char	*cp;
+approximate_cmd (char *cp)
 {
 	int	start, stop;
 	int	k;
@@ -3723,8 +3699,7 @@ char	*cp;
  * The replace command.
  */
 int
-replace_cmd(cp)
-char	*cp;
+replace_cmd (char *cp)
 {
 	int	i, j;
 	long	last_v, v, va[MAX_VARS];	/* Mathomatic variables */
@@ -3859,8 +3834,7 @@ do_this:
  * Returns number of expressions simplified.
  */
 int
-simplify_cmd(cp)
-char	*cp;
+simplify_cmd (char *cp)
 {
 	int		i, i1;
 	int		first, last;
@@ -4033,8 +4007,7 @@ char	*cp;
  * The factor command.
  */
 int
-factor_cmd(cp)
-char	*cp;
+factor_cmd (char *cp)
 {
 	int	first, last;
 	int	i1;
@@ -4224,8 +4197,9 @@ try_parsing:
  * Return the total number of terms.
  */
 int
-display_term_count(en)
-int	en;	/* equation space number */
+display_term_count (
+    int en	/* equation space number */
+)
 {
 	int	left_count = 0, right_count = 0;
 
@@ -4247,8 +4221,7 @@ int	en;	/* equation space number */
  * The unfactor command.
  */
 int
-unfactor_cmd(cp)
-char	*cp;
+unfactor_cmd (char *cp)
 {
 	int	first, last;
 	int	k;
@@ -4332,9 +4305,7 @@ char	*cp;
 }
 
 int
-div_loc_find(expression, n)
-token_type	*expression;
-int		n;
+div_loc_find (token_type *expression, int n)
 {
 	int	k, div_loc;
 	int	level;
@@ -4355,8 +4326,7 @@ int		n;
  * The fraction command.
  */
 int
-fraction_cmd(cp)
-char	*cp;
+fraction_cmd (char *cp)
 {
 	int	i, div_loc;
 	int	first, last;
@@ -4423,8 +4393,7 @@ char	*cp;
  * The quit command.
  */
 int
-quit_cmd(cp)
-char	*cp;
+quit_cmd (char *cp)
 {
 	int	ev = 0;
 
@@ -4443,8 +4412,7 @@ char	*cp;
  * The read command.
  */
 int
-read_cmd(cp)
-char	*cp;
+read_cmd (char *cp)
 {
 	int	rv;
 
@@ -4468,8 +4436,7 @@ char	*cp;
  * Return true if successful.
  */
 int
-read_file(cp)
-char	*cp;
+read_file (char *cp)
 {
 	int	rv;
 	FILE	*fp;
@@ -4562,9 +4529,10 @@ char	*cp;
  * Return zero if no error, non-zero if read aborted.
  */
 int
-read_sub(fp, filename)
-FILE	*fp;		/* open Mathomatic input file */
-char	*filename;	/* filename of fp */
+read_sub (
+    FILE *fp,		/* open Mathomatic input file */
+    char *filename	/* filename of fp */
+)
 {
 	int	rv;
 	jmp_buf	save_save;
@@ -4608,8 +4576,7 @@ char	*filename;	/* filename of fp */
 
 #if	SHELL_OUT
 static int
-edit_sub(cp)
-char	*cp;
+edit_sub (char *cp)
 {
 	char	cl[MAX_CMD_LEN];	/* command-line */
 	char	*cp1;
@@ -4618,7 +4585,7 @@ char	*cp;
 edit_again:
 	cp1 = getenv("EDITOR");
 	if (cp1 == NULL) {
-#if	CYGWIN || MINGW
+#ifdef	_WIN32
 		cp1 = "notepad";
 #else
 		cp1 = "nano";
@@ -4647,8 +4614,7 @@ edit_again:
  * The edit command.
  */
 int
-edit_cmd(cp)
-char	*cp;
+edit_cmd (char *cp)
 {
 	FILE	*fp;
 #if	!MINGW
@@ -4719,8 +4685,7 @@ char	*cp;
  * The save command.
  */
 int
-save_cmd(cp)
-char	*cp;
+save_cmd (char *cp)
 {
 	FILE	*fp;
 	int	rv, space_flag = false, error_flag;

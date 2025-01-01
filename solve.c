@@ -2,7 +2,7 @@
  * Mathomatic symbolic solve routines.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 #include "includes.h"
@@ -37,16 +37,17 @@ static int	prev_n1, prev_n2;
 static int	last_int_var = 0;
 
 /*
- * Solve using equation spaces.  Almost always displays a message.
+ * Solve using equation spaces.	 Almost always displays a message.
  *
  * Return true if successful.  If successful, you should display the solve result.
  * You are allowed to simplify the result before display however,
  * preferably with "simplify quick".  Just plain "simplify" expands too much sometimes.
  */
 int
-solve_espace(want, have)
-int	want;	/* equation number containing what to solve for */
-int	have;	/* equation number to solve */
+solve_espace (
+    int want,	/* equation number containing what to solve for */
+    int have	/* equation number to solve */
+)
 {
 	int	i;
 	jmp_buf	save_save;
@@ -97,7 +98,7 @@ int	have;	/* equation number to solve */
  *
  * This works by moving everything containing the variable to solve for
  * to the LHS (via transposition), then moving everything not containing the variable to the
- * RHS.  Many tricks are used, and this routine works very well.
+ * RHS.	 Many tricks are used, and this routine works very well.
  *
  * Globals tlhs[] and trhs[] are used to hold the actual equation while manipulating.
  *
@@ -109,13 +110,14 @@ int	have;	/* equation number to solve */
  * Returns -2 if unsolvable in all realms.
  */
 int
-solve_sub(wantp, wantn, leftp, leftnp, rightp, rightnp)
-token_type	*wantp;		/* expression to solve for */
-int		wantn;		/* length of expression to solve for */
-token_type	*leftp;		/* LHS of equation */
-int		*leftnp;	/* pointer to length of LHS */
-token_type	*rightp;	/* RHS of equation */
-int		*rightnp;	/* pointer to length of RHS */
+solve_sub (
+    token_type *wantp,	/* expression to solve for */
+    int wantn,		/* length of expression to solve for */
+    token_type *leftp,	/* LHS of equation */
+    int *leftnp,	/* pointer to length of LHS */
+    token_type *rightp,	/* RHS of equation */
+    int *rightnp	/* pointer to length of RHS */
+)
 {
 	int		i, j;
 	int		found, found_count;
@@ -151,7 +153,7 @@ int		*rightnp;	/* pointer to length of RHS */
 /*
  * Solving for 0^2 will isolate the square root and then square both sides of an equation;
  * and solving for variable^2 will isolate the square root of that variable
- * and then square both sides of the equation.  Works for any power and variable.
+ * and then square both sides of the equation.	Works for any power and variable.
  */
 			if (wantp[0].kind == VARIABLE) {
 				v = wantp[0].token.variable;
@@ -652,9 +654,7 @@ fin1:
  * Return true if successful.
  */
 static int
-increase(d, v)
-double	d;
-long	v;
+increase (double d, long v)
 {
 	int		flag, foundp, found2;
 	int		len1, len2;
@@ -789,8 +789,9 @@ end:
  * Return true if successful, with solved equation in tlhs and trhs.
  */
 static int
-poly_solve(v)
-long	v;	/* solve variable */
+poly_solve (
+    long v	/* solve variable */
+)
 {
 	int		i, j, k;
 	token_type	*p1, *p2, *ep;
@@ -888,7 +889,7 @@ long	v;	/* solve variable */
 			}
 		}
 	}
-	if (high_power == 0.0)
+	if (high_power == 0.0 || x1p == NULL)
 		return false;
 #if	!SILENT
 	if (debug_level >= 0) {
@@ -1129,13 +1130,14 @@ big_bbreak:
  * Return true unless something is wrong.
  */
 static int
-g_of_f(op, operandp, side1p, side1np, side2p, side2np)
-int		op;		/* current operator */
-token_type	*operandp;	/* operand pointer */
-token_type	*side1p;	/* equation side pointer */
-int		*side1np;	/* pointer to the length of "side1p" */
-token_type	*side2p;	/* equation side pointer */
-int		*side2np;	/* pointer to the length of "side2p" */
+g_of_f (
+    int op,			/* current operator */
+    token_type *operandp,	/* operand pointer */
+    token_type *side1p,		/* equation side pointer */
+    int *side1np,		/* pointer to the length of "side1p" */
+    token_type *side2p,		/* equation side pointer */
+    int *side2np		/* pointer to the length of "side2p" */
+)
 {
 	token_type	*p1, *p2, *ep;
 	int		oldn, operandn;
@@ -1388,11 +1390,12 @@ int		*side2np;	/* pointer to the length of "side2p" */
  * Return true if successful.
  */
 static int
-flip(side1p, side1np, side2p, side2np)
-token_type	*side1p;	/* equation side pointer */
-int		*side1np;	/* pointer to equation side length */
-token_type	*side2p;
-int		*side2np;
+flip (
+    token_type *side1p,	/* equation side pointer */
+    int *side1np,	/* pointer to equation side length */
+    token_type *side2p,
+    int *side2np
+)
 {
 	token_type	*p1, *ep;
 

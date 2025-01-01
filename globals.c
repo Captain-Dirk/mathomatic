@@ -6,7 +6,7 @@
  * This is required for proper operation.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 #include "includes.h"
@@ -110,7 +110,7 @@ double		small_epsilon	= 0.000000000000005;	/* for ignoring small, floating point
 double		epsilon		= 0.00000000000005;	/* for ignoring larger, accumulated round-off errors */
 
 /* string variables */
-char		*prog_name = "mathomatic";	/* name of this program */
+char const	prog_name[] = "mathomatic";	/* name of this program */
 char		*var_names[MAX_VAR_NAMES];	/* index for storage of variable name strings */
 char		var_str[MAX_VAR_LEN+80];	/* temp storage for listing a variable name */
 char		prompt_str[MAX_PROMPT_LEN];	/* temp storage for the prompt string */
@@ -118,7 +118,7 @@ char		prompt_str[MAX_PROMPT_LEN];	/* temp storage for the prompt string */
 char		rc_file[MAX_CMD_LEN];		/* pathname for the set options startup file */
 #endif
 
-#if	CYGWIN || MINGW
+#ifdef	_WIN32
 char		*dir_path;			/* directory path to the executable */
 #endif
 #if	READLINE || EDITLINE

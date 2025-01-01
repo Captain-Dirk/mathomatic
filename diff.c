@@ -2,7 +2,7 @@
  * Mathomatic symbolic differentiation routines and related commands.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 #include "includes.h"
@@ -36,10 +36,11 @@ static int d_recurse(token_type *equation, int *np, int loc, int level, long v);
  * The result must be simplified by the caller.
  */
 int
-differentiate(equation, np, v)
-token_type	*equation;	/* pointer to source and destination equation side */
-int		*np;		/* pointer to the length of the equation side */
-long		v;		/* differentiation variable */
+differentiate (
+    token_type *equation,	/* pointer to source and destination equation side */
+    int *np,			/* pointer to the length of the equation side */
+    long v			/* differentiation variable */
+)
 {
 	int	i;
 
@@ -67,10 +68,7 @@ long		v;		/* differentiation variable */
  * Return false if it is beyond this program's capabilities or an error was encountered.
  */
 static int
-d_recurse(equation, np, loc, level, v)
-token_type	*equation;
-int		*np, loc, level;
-long		v;
+d_recurse (token_type *equation, int *np, int loc, int level, long v)
 {
 	int		i, j;
 	int		n;
@@ -304,8 +302,7 @@ d_power:
  * The derivative command.
  */
 int
-derivative_cmd(cp)
-char	*cp;
+derivative_cmd (char *cp)
 {
 	int		i, len;
 	long		v = 0;		/* Mathomatic variable */
@@ -437,8 +434,7 @@ char	*cp;
  * The extrema command.
  */
 int
-extrema_cmd(cp)
-char	*cp;
+extrema_cmd (char *cp)
 {
 	int		i;
 	long		v = 0;		/* Mathomatic variable */
@@ -527,8 +523,7 @@ char	*cp;
  * The taylor command.
  */
 int
-taylor_cmd(cp)
-char	*cp;
+taylor_cmd (char *cp)
 {
 	long		v = 0;			/* Mathomatic variable */
 	int		i, j, k, i1;
@@ -554,10 +549,10 @@ char	*cp;
 	blt(lhs[i], lhs[cur_equation], n_lhs[cur_equation] * sizeof(token_type));
 	n_lhs[i] = n_lhs[cur_equation];
 	n_rhs[i] = 0;
-        our = alloc_next_espace();
+	our = alloc_next_espace();
 	n_lhs[i] = 0;
-        if (our < 0) {
-                error(_("Out of free equation spaces."));
+	if (our < 0) {
+		error(_("Out of free equation spaces."));
 		show_usage = false;
 		return false;
 	}
@@ -765,8 +760,7 @@ loop_again:
  * The limit command.
  */
 int
-limit_cmd(cp)
-char	*cp;
+limit_cmd (char *cp)
 {
 	int		i;
 	long		v = 0;			/* Mathomatic variable */

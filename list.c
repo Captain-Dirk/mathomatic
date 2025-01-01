@@ -3,7 +3,7 @@
  * Color mode routines, too.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -20,7 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 #include "includes.h"
@@ -28,23 +28,23 @@ George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
 #if	WIN32_CONSOLE_COLORS
 /* The WIN32_CONSOLE_COLORS code was contributed by Doug Snead for the MinGW C compiler. */
 #include <windows.h>
-#include <wincon.h> 
+#include <wincon.h>
 
-#define  FOREGROUND_BLACK	0
-#define  FOREGROUND_YELLOW      (FOREGROUND_RED|FOREGROUND_GREEN)  
-#define  FOREGROUND_MAGENTA     (FOREGROUND_BLUE|FOREGROUND_RED)   
-#define  FOREGROUND_CYAN        (FOREGROUND_BLUE|FOREGROUND_GREEN) 
-#define  FOREGROUND_WHITE       (FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE)
+#define	 FOREGROUND_BLACK	0
+#define	 FOREGROUND_YELLOW	(FOREGROUND_RED|FOREGROUND_GREEN)
+#define	 FOREGROUND_MAGENTA	(FOREGROUND_BLUE|FOREGROUND_RED)
+#define	 FOREGROUND_CYAN	(FOREGROUND_BLUE|FOREGROUND_GREEN)
+#define	 FOREGROUND_WHITE	(FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE)
 
 /* MS-Windows color array for coloring mathematical expressions, warnings, and errors. */
 static short windows_carray[] = {
-    FOREGROUND_GREEN, 
+    FOREGROUND_GREEN,
     FOREGROUND_YELLOW,	/* warning text color */
-    FOREGROUND_RED, 	/* error text color */
+    FOREGROUND_RED,	/* error text color */
     FOREGROUND_MAGENTA,
-    FOREGROUND_BLUE, 
+    FOREGROUND_BLUE,
     FOREGROUND_CYAN,
-}; 
+};
 
 extern HANDLE hOut;
 #endif
@@ -69,7 +69,7 @@ static int flist_recurse(token_type *p1, int n, int out_flag, char *string, int 
 /* Bright HTML color array. */
 /* Used when HTML output and "set color" and "set bold" options are enabled. */
 /* Good looking with a dark background. */
-static char	*bright_html_carray[] = {
+static char const *const bright_html_carray[] = {
 	"#00FF00",	/* must be bright green (default color) */
 	"#FFFF00",	/* must be bright yellow (for warnings) */
 	"#FF0000",	/* must be bright red (for errors) */
@@ -82,7 +82,7 @@ static char	*bright_html_carray[] = {
 /* Dim HTML color array for color HTML output. */
 /* Used for HTML output with "set color" and "set no bold" options. */
 /* Good looking with a white background. */
-static char	*html_carray[] = {
+static char const *const html_carray[] = {
 	"green",
 	"olive",
 	"red",
@@ -116,12 +116,12 @@ reset_attr(void)
 		} else {
 #if	WIN32_CONSOLE_COLORS
 			if (color_flag == 2) {
-	                        fprintf(fp, "\033[0m");
+				fprintf(fp, "\033[0m");
 			} else {
-	                        SetConsoleTextAttribute(hOut, FOREGROUND_WHITE);
+				SetConsoleTextAttribute(hOut, FOREGROUND_WHITE);
 			}
 #else
-                        fprintf(fp, "\033[0m");
+			fprintf(fp, "\033[0m");
 #endif
 		}
 		fflush(fp);
@@ -138,8 +138,7 @@ reset_attr(void)
  * Return actual color number displayed or -1 if no color.
  */
 int
-set_color(color)
-int	color;
+set_color (int color)
 {
 	int	rv = -1;
 
@@ -161,15 +160,15 @@ int	color;
 		} else {
 #if	WIN32_CONSOLE_COLORS
 			if (color_flag == 2) {
-	                        fprintf(gfp, "\033[%d;%dm", bold_colors, carray[rv = (color % ARR_CNT(carray))]);
+				fprintf(gfp, "\033[%d;%dm", bold_colors, carray[rv = (color % ARR_CNT(carray))]);
 			} else {
-	                        short attr = windows_carray[rv = (color % ARR_CNT(windows_carray))];
-        	                if (bold_colors)
-                	                 attr |= FOREGROUND_INTENSITY;
+				short attr = windows_carray[rv = (color % ARR_CNT(windows_carray))];
+				if (bold_colors)
+					 attr |= FOREGROUND_INTENSITY;
 				SetConsoleTextAttribute(hOut, attr);
 			}
 #else
-                        fprintf(gfp, "\033[%d;%dm", bold_colors, carray[rv = (color % ARR_CNT(carray))]);
+			fprintf(gfp, "\033[%d;%dm", bold_colors, carray[rv = (color % ARR_CNT(carray))]);
 #endif
 		}
 		cur_color = color;
@@ -181,8 +180,9 @@ int	color;
  * Set normal text color for subsequent output.
  */
 void
-default_color(set_no_color_flag)
-int	set_no_color_flag;	/* If true, set no color even if text_color is set.  Normally this would be false. */
+default_color (
+    int set_no_color_flag	/* If true, set no color even if text_color is set.  Normally this would be false. */
+)
 {
 	if (html_flag != 2 && gfp != stdout) {
 		return;
@@ -238,8 +238,7 @@ display_all_colors(void)
  * Trim the trailing zeros from a string, after the decimal point.
  */
 static void
-trim_zeros(buf)
-char	*buf;
+trim_zeros (char *buf)
 {
 	int	j;
 
@@ -262,9 +261,10 @@ char	*buf;
  * Return length (number of screen columns) of output line.
  */
 int
-list1_sub(n, export_flag)
-int	n;		/* equation space number */
-int	export_flag;	/* non-zero for exportable format (readable by other math programs) */
+list1_sub (
+    int n,		/* equation space number */
+    int export_flag	/* non-zero for exportable format (readable by other math programs) */
+)
 			/* 1 for Maxima, 2 for other, 3 for gnuplot, 4 for hexadecimal */
 {
 	int	len = 0;
@@ -282,7 +282,7 @@ int	export_flag;	/* non-zero for exportable format (readable by other math progr
 	if (export_flag == 1) {
 		len += fprintf(gfp, ";");
 	}
-#if	CYGWIN
+#ifdef	_WIN32
 	fprintf(gfp, "\r\n");	/* might be redirecting to a Microsoft text file */
 #else
 	fprintf(gfp, "\n");
@@ -297,8 +297,9 @@ int	export_flag;	/* non-zero for exportable format (readable by other math progr
  * or zero on failure.
  */
 int
-list_sub(n)
-int	n;	/* equation space number */
+list_sub (
+    int n	/* equation space number */
+)
 {
 	if (empty_equation_space(n))
 		return 0;
@@ -317,12 +318,7 @@ int	n;	/* equation space number */
 
 #if	!SILENT
 void
-list_debug(level, p1, n1, p2, n2)
-int		level;
-token_type	*p1;
-int		n1;
-token_type	*p2;
-int		n2;
+list_debug (int level, token_type *p1, int n1, token_type *p2, int n2)
 {
 	if (debug_level >= level) {
 		if (level >= -2) {
@@ -345,8 +341,9 @@ int		n2;
  * Does not return the actual variable name, use list_var() for that.
  */
 char *
-var_name(v)
-long	v;	/* Mathomatic variable */
+var_name (
+    long v	/* Mathomatic variable */
+)
 {
 	char	*cp = NULL;
 	long	l;
@@ -371,9 +368,10 @@ long	v;	/* Mathomatic variable */
  * -5 for mathomatic-only variable format.
  */
 int
-list_var(v, lang_code)
-long	v;		/* variable to convert */
-int	lang_code;	/* language code */
+list_var (
+    long v,		/* variable to convert */
+    int lang_code	/* language code */
+)
 {
 	int		j;
 	int		from_memory = false;
@@ -501,11 +499,12 @@ int	lang_code;	/* language code */
  * Return number of characters output (excluding escape sequences).
  */
 int
-list_proc(p1, n, export_flag)
-token_type	*p1;		/* expression pointer */
-int		n;		/* length of expression */
-int		export_flag;	/* flag for exportable format (usually false) */
-				/* 1 for Maxima, 2 for other, 3 for gnuplot, 4 for hexadecimal */
+list_proc (
+    token_type *p1,	/* expression pointer */
+    int n,		/* length of expression */
+    int export_flag	/* flag for exportable format (usually false) */
+)
+			/* 1 for Maxima, 2 for other, 3 for gnuplot, 4 for hexadecimal */
 {
 	return list_string_sub(p1, n, true, NULL, export_flag);
 }
@@ -517,9 +516,10 @@ int		export_flag;	/* flag for exportable format (usually false) */
  * Returns text string, or NULL if error.
  */
 char *
-list_equation(n, export_flag)
-int	n;		/* equation space number */
-int	export_flag;	/* flag for exportable format (usually false) */
+list_equation (
+    int n,		/* equation space number */
+    int export_flag	/* flag for exportable format (usually false) */
+)
 {
 	int	len;
 	char	*cp;
@@ -555,10 +555,11 @@ int	export_flag;	/* flag for exportable format (usually false) */
  * Return string, or NULL if error.
  */
 char *
-list_expression(p1, n, export_flag)
-token_type	*p1;		/* expression pointer */
-int		n;		/* length of expression */
-int		export_flag;
+list_expression (
+    token_type *p1,	/* expression pointer */
+    int n,		/* length of expression */
+    int export_flag
+)
 {
 	int	len;
 	char	*cp;
@@ -586,11 +587,12 @@ int		export_flag;
  * Return length (number of characters).
  */
 int
-list_string(p1, n, string, export_flag)
-token_type	*p1;		/* expression pointer */
-int		n;		/* length of expression */
-char		*string;	/* buffer to save output to or NULL pointer */
-int		export_flag;
+list_string (
+    token_type *p1,	/* expression pointer */
+    int n,		/* length of expression */
+    char *string,	/* buffer to save output to or NULL pointer */
+    int export_flag
+)
 {
 	return list_string_sub(p1, n, false, string, export_flag);
 }
@@ -599,13 +601,14 @@ int		export_flag;
 #define	APPEND2(str)	{ if (string) { if ((sbuffer_size - current_len) > 0) my_strlcpy(&string[current_len], str, sbuffer_size - current_len); } else { fprintf(gfp, "%s", str); } current_len += strlen(str); }
 
 int
-list_string_sub(p1, n, outflag, string, export_flag)
-token_type	*p1;		/* expression pointer */
-int		n;		/* length of expression */
-int		outflag;	/* if true, output to gfp */
-char		*string;	/* buffer to save output to or NULL pointer */
-int		export_flag;	/* flag for exportable format (usually false) */
-				/* 1 for Maxima, 2 for other, 3 for gnuplot, 4 for hexadecimal */
+list_string_sub (
+    token_type *p1,	/* expression pointer */
+    int n,		/* length of expression */
+    int outflag,	/* if true, output to gfp */
+    char *string,	/* buffer to save output to or NULL pointer */
+    int export_flag	/* flag for exportable format (usually false) */
+)
+			/* 1 for Maxima, 2 for other, 3 for gnuplot, 4 for hexadecimal */
 {
 	int	i, j, k, i1;
 	int	min1;
@@ -753,9 +756,10 @@ int		export_flag;	/* flag for exportable format (usually false) */
  * Return -1 if it contains non-integer divide operators, but is OK otherwise.
  */
 int
-int_expr(p1, n)
-token_type	*p1;		/* expression pointer */
-int		n;		/* length of expression */
+int_expr (
+    token_type *p1,	/* expression pointer */
+    int n		/* length of expression */
+)
 {
 	int	i;
 	int	rv = 1;
@@ -787,10 +791,11 @@ int		n;		/* length of expression */
  * Return length of output (number of characters).
  */
 int
-list_code_equation(en, language, int_flag)
-int			en;		/* equation space number */
-enum language_list	language;
-int			int_flag;	/* integer arithmetic flag */
+list_code_equation (
+    int en,		/* equation space number */
+    enum language_list language,
+    int int_flag	/* integer arithmetic flag */
+)
 {
 	int	len = 0;
 
@@ -820,10 +825,11 @@ int			int_flag;	/* integer arithmetic flag */
  * Return string, or NULL if error.
  */
 char *
-string_code_equation(en, language, int_flag)
-int			en;		/* equation space number */
-enum language_list	language;
-int			int_flag;	/* integer arithmetic flag */
+string_code_equation (
+    int en,		/* equation space number */
+    enum language_list language,
+    int int_flag	/* integer arithmetic flag */
+)
 {
 	int	len;
 	char	*cp;
@@ -864,13 +870,14 @@ int			int_flag;	/* integer arithmetic flag */
  * Return length of output (number of characters).
  */
 int
-list_code(equation, np, outflag, string, language, int_flag)
-token_type		*equation;	/* equation side pointer */
-int			*np;		/* pointer to length of equation side */
-int			outflag;	/* if true, output to gfp */
-char			*string;	/* buffer to save output to or NULL pointer */
-enum language_list	language;	/* see enumeration language_list in am.h */
-int			int_flag;	/* integer arithmetic flag, should work with any language */
+list_code (
+    token_type *equation,		/* equation side pointer */
+    int *np,				/* pointer to length of equation side */
+    int outflag,			/* if true, output to gfp */
+    char *string,			/* buffer to save output to or NULL pointer */
+    enum language_list language,	/* see enumeration language_list in am.h */
+    int int_flag			/* integer arithmetic flag, should work with any language */
+)
 {
 	int	i, j, k, i1, i2;
 	int	min1;
@@ -909,7 +916,7 @@ int			int_flag;	/* integer arithmetic flag, should work with any language */
 									switch (language) {
 									case C:
 										APPEND("pow");
-							 			break;
+										break;
 									case JAVA:
 										APPEND("Math.pow");
 										break;
@@ -949,7 +956,7 @@ int			int_flag;	/* integer arithmetic flag, should work with any language */
 			}
 			break;
 		case VARIABLE:
-		  	if (int_flag && (language == C || language == JAVA) && equation[i].token.variable == IMAGINARY) {
+			if (int_flag && (language == C || language == JAVA) && equation[i].token.variable == IMAGINARY) {
 				APPEND("1i");
 			} else {
 				list_var(equation[i].token.variable, language);
@@ -1021,8 +1028,9 @@ static int	cur_pos;	/* current position in the current line on the screen */
  * current_columns is set in malloc_vscreen().
  */
 char *
-flist_equation_string(n)
-int	n;	/* equation space number */
+flist_equation_string (
+    int n	/* equation space number */
+)
 {
 	int	i;
 	int	len, cur_len, buf_len;
@@ -1096,8 +1104,9 @@ int	n;	/* equation space number */
  * or zero on failure.
  */
 int
-flist_equation(n)
-int	n;	/* equation space number */
+flist_equation (
+    int n	/* equation space number */
+)
 {
 	int	sind;
 	char	buf[50];
@@ -1150,7 +1159,7 @@ make_smaller:
 	if (screen_columns && use_screen_columns && width >= screen_columns) {
 		/* output too wide to fit screen, output in single-line format */
 		width = list1_sub(n, false);
-#if	CYGWIN
+#ifdef	_WIN32
 		fprintf(gfp, "\r\n");	/* Be consistent with list1_sub() output. */
 #else
 		fprintf(gfp, "\n");
@@ -1199,14 +1208,16 @@ make_smaller:
  * Return the width of the expression (that is, the required number of screen columns).
  */
 static int
-flist_sub(p1, n, out_flag, string, sbuffer_size, pos, highp, lowp)
-token_type	*p1;		/* expression pointer */
-int		n;		/* length of expression */
-int		out_flag;	/* if true, output to gfp or string */
-char		*string;	/* if not NULL, put output to here instead of gfp */
-int		sbuffer_size;	/* string buffer size */
-int		pos;
-int		*highp, *lowp;
+flist_sub (
+    token_type *p1,	/* expression pointer */
+    int n,		/* length of expression */
+    int out_flag,	/* if true, output to gfp or string */
+    char *string,	/* if not NULL, put output to here instead of gfp */
+    int sbuffer_size,	/* string buffer size */
+    int pos,
+    int *highp,
+    int *lowp
+)
 {
 	int	rv;
 
@@ -1218,16 +1229,18 @@ int		*highp, *lowp;
 }
 
 static int
-flist_recurse(p1, n, out_flag, string, sbuffer_size, line, pos, cur_level, highp, lowp)
-token_type	*p1;
-int		n;
-int		out_flag;	/* if true, output to gfp or string */
-char		*string;	/* if not NULL, put output to here instead of gfp */
-int		sbuffer_size;	/* string buffer size */
-int		line;
-int		pos;
-int		cur_level;
-int		*highp, *lowp;
+flist_recurse (
+    token_type *p1,
+    int n,
+    int out_flag,	/* if true, output to gfp or string */
+    char *string,	/* if not NULL, put output to here instead of gfp */
+    int sbuffer_size,	/* string buffer size */
+    int line,
+    int pos,
+    int cur_level,
+    int *highp,
+    int *lowp
+)
 {
 	int	i, j, k, i1;
 	int	l1, l2;

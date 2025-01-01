@@ -2,7 +2,7 @@
  * Mathomatic integration routines and commands.
  *
  * Copyright (C) 1987-2012 George Gesslein II.
- 
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 The chief copyright holder can be contacted at gesslein@mathomatic.org, or
 George Gesslein II, P.O. Box 224, Lansing, NY  14882-0224  USA.
- 
+
  */
 
 #include "includes.h"
@@ -35,10 +35,11 @@ static int	constant_var_number = 1;	/* makes unique numbers for the constant of 
  * unless it is on the right side of a power operator.
  */
 void
-make_powers(equation, np, v)
-token_type	*equation;	/* pointer to beginning of equation side */
-int		*np;		/* pointer to length of equation side */
-long		v;		/* Mathomatic variable */
+make_powers (
+    token_type *equation,	/* pointer to beginning of equation side */
+    int *np,			/* pointer to length of equation side */
+    long v			/* Mathomatic variable */
+)
 {
 	int	i;
 	int	level;
@@ -81,11 +82,13 @@ long		v;		/* Mathomatic variable */
  * Return true if successful.
  */
 int
-int_dispatch(equation, np, v, func)
-token_type	*equation;	/* pointer to beginning of equation side to integrate */
-int		*np;		/* pointer to length of equation side */
-long		v;		/* integration variable */
-int		(*func)(token_type *equation, int *np, int loc, int eloc, long v);	/* integration function to call for each term */
+int_dispatch (
+    token_type *equation,	/* pointer to beginning of equation side to integrate */
+    int *np,			/* pointer to length of equation side */
+    long v,			/* integration variable */
+    int (*func)(		/* integration function to call for each term */
+      token_type *equation, int *np, int loc, int eloc, long v)
+)
 {
 	int	i, j;
 
@@ -119,12 +122,13 @@ int		(*func)(token_type *equation, int *np, int loc, int eloc, long v);	/* integ
  * Return true if successful.
  */
 static int
-integrate_sub(equation, np, loc, eloc, v)
-token_type	*equation;	/* pointer to beginning of equation side */
-int		*np;		/* pointer to length of equation side */
-int		loc;		/* beginning location of term */
-int		eloc;		/* end location of term */
-long		v;		/* variable of integration */
+integrate_sub (
+    token_type *equation,	/* pointer to beginning of equation side */
+    int *np,			/* pointer to length of equation side */
+    int loc,			/* beginning location of term */
+    int eloc,			/* end location of term */
+    long v			/* variable of integration */
+)
 {
 	int		i, j, k;
 	int		len;
@@ -243,8 +247,7 @@ long		v;		/* variable of integration */
  * The integrate command.
  */
 int
-integrate_cmd(cp)
-char	*cp;
+integrate_cmd (char *cp)
 {
 	int		i, j;
 	int		len;
@@ -437,11 +440,7 @@ char	*cp;
  * Return true if successful.
  */
 static int
-laplace_sub(equation, np, loc, eloc, v)
-token_type	*equation;
-int		*np;
-int		loc, eloc;
-long		v;
+laplace_sub (token_type *equation, int *np, int loc, int eloc, long v)
 {
 	int		i, j, k;
 	int		len;
@@ -523,11 +522,7 @@ long		v;
  * Return true if successful.
  */
 static int
-inv_laplace_sub(equation, np, loc, eloc, v)
-token_type	*equation;
-int		*np;
-int		loc, eloc;
-long		v;
+inv_laplace_sub (token_type *equation, int *np, int loc, int eloc, long v)
 {
 	int	i, j, k;
 	int	len;
@@ -589,8 +584,7 @@ long		v;
  * The laplace command.
  */
 int
-laplace_cmd(cp)
-char	*cp;
+laplace_cmd (char *cp)
 {
 	int		i;
 	long		v = 0;
@@ -674,8 +668,7 @@ char	*cp;
  * Numerical integrate command.
  */
 int
-nintegrate_cmd(cp)
-char	*cp;
+nintegrate_cmd (char *cp)
 {
 	long		v = 0;			/* Mathomatic variable */
 	int		i, j, k, i1, i2;
