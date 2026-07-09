@@ -237,20 +237,20 @@ matho_parse(char *input, char **outputp)
 }
 
 EXPORT int
-matho_current_eqn()
+matho_current_eqn(void)
 {
   return cur_equation;
 }
 
 
 EXPORT int
-matho_result_eqn()
+matho_result_eqn(void)
 {
   return result_en;
 }
 
 EXPORT const char *
-matho_warning()
+matho_warning(void)
 {
   return warning_str;
 }
