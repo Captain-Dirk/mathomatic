@@ -20,6 +20,7 @@ extern "C" {
 #endif
 
 EXPORT int matho_init(void);				/* one-time Mathomatic initialization */
+EXPORT const char *matho_version(void);			/* version and git hash string, e.g. "17.0.0 430b037" */
 EXPORT FILE *matho_outfile (FILE *fp);			/* set output, return previous */
 EXPORT int matho_process(char *input, char **outputp);	/* Mathomatic command or expression input */
 EXPORT int matho_parse(char *input, char **outputp);	/* Mathomatic expression or equation input */

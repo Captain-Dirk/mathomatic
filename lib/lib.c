@@ -38,6 +38,26 @@ matho_init(void)
 }
 
 /** 3
+ * matho_version - Get the Mathomatic version string
+ * Return the version of the Mathomatic symbolic math library
+ * as a constant string: the version number, followed by the
+ * source git hash if it was known at compile time,
+ * for example "17.0.0 430b037".
+ *
+ * Useful in cache keys of programs that store generated output,
+ * which may change with the Mathomatic version.
+ */
+EXPORT const char *
+matho_version(void)
+{
+#ifdef	GIT_HASH
+	return VERSION " " GIT_HASH;
+#else
+	return VERSION;
+#endif
+}
+
+/** 3
  * matho_outfile - Redirect Mathomatic output to a stdio stream
  * Set the stream that Mathomatic writes all command output and
  * messages to. matho_init(3) initializes it to stdout.
