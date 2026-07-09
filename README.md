@@ -7,12 +7,14 @@ Mathomatic was written by George Gesslein II between 1987 and 2012 and
 released under the GNU LGPL. After the author's death the project site
 vanished; his final release (16.0.5) is preserved unchanged in a read-only
 [archive repository](https://github.com/mfillpot/mathomatic), which
-recommends forking — this repository is such a fork. Everything the program can do is his work. The changes here are
-strictly janitorial:
-modernized ANSI C prototypes, C++ and MSVC/MinGW compatibility, a
-shared-library build, and a few small additions to the library API so that
-a host program can capture Mathomatic's output — in particular the
-generated C code — and run a compiler on it.
+recommends forking — this repository is such a fork, and it aims beyond
+conservation at a new version. The symbolic math engine remains his work;
+on top of it this fork modernizes the sources (ANSI C prototypes, C++ and
+MSVC/MinGW compatibility, a shared-library build), extends the library API
+so that a host program can capture Mathomatic's output — in particular the
+generated C code — and improves the code generator so that the emitted C
+compiles as-is and matches the engine's semantics exactly (modulus modes,
+real cube roots, absolute values, factorials).
 
 ## Why Mathomatic
 
@@ -221,6 +223,5 @@ localization, ...).
 
 Copyright © 1987–2012 George Gesslein II. Licensed under the
 [GNU Lesser General Public License v2.1](COPYING); the documentation is
-under the GNU FDL. This repository exists so that his work remains
-available and usable — if you wish to take the project further, please
-fork it.
+under the GNU FDL. This fork carries his work forward so that it remains
+available, usable, and improving.
