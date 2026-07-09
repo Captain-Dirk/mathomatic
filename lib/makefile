@@ -28,7 +28,8 @@ MATHOMATIC_OBJECTS += globals.o am.o solve.o help.o parse.o cmds.o simplify.o \
 		  complex.o complex_lib.o list.o gcd.o factor_int.o
 
 # man pages to automatically make and install:
-MAN3		= matho_init.3 matho_clear.3 matho_parse.3 matho_process.3
+MAN3		= matho_init.3 matho_clear.3 matho_parse.3 matho_process.3 \
+		  matho_outfile.3 matho_current_eqn.3 matho_result_eqn.3 matho_warning.3
 
 .PHONY: all install uninstall clean distclean maintainer-clean flush lib manpages
 
