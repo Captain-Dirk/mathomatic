@@ -2447,10 +2447,10 @@ Solve successful:
 
 1-> ; To output programming language code, use the code command:
 1-> code ; C language code is the default.
-b = (pow(((c*c) - (a*a)), (1.0/2.0))*sign0);
+b = (sqrt(((c*c) - (a*a)))*sign0);
 1-> 
 1-> code java ; Mathomatic can also generate Java
-b = (Math.pow(((c*c) - (a*a)), (1.0/2.0))*sign0);
+b = (Math.sqrt(((c*c) - (a*a)))*sign0);
 1-> 
 1-> code python ; and Python code.
 b = ((((c*c) - (a*a))**(1.0/2.0))*sign0)

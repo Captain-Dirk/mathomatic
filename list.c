@@ -867,46 +867,26 @@ static char *code_span_string(token_type *p1, int n, enum language_list language
 
 /*
  * If the exponent of the power operator at token index i2 (level "level") is exactly
- * a fraction group n/2 with positive odd integer n, as produced by make_fractions_and_group(),
- * return n, otherwise return 0.
+ * a fraction group num/denom with positive integer numerator, as produced by
+ * make_fractions_and_group(), return the numerator, otherwise return 0.
  */
 static double
-code_half_power (token_type *equation, int n, int i2, int level)
+code_num_over (token_type *equation, int n, int i2, int level, double denom)
 {
 	if (i2 + 3 < n
 	    && equation[i2+1].kind == CONSTANT
 	    && equation[i2+1].token.constant > 0.0
-	    && fmod(equation[i2+1].token.constant, 2.0) == 1.0
+	    && fmod(equation[i2+1].token.constant, 1.0) == 0.0
 	    && equation[i2+1].level == level + 1
 	    && equation[i2+2].kind == OPERATOR
 	    && equation[i2+2].token.operatr == DIVIDE
 	    && equation[i2+2].level == level + 1
 	    && equation[i2+3].kind == CONSTANT
-	    && equation[i2+3].token.constant == 2.0
+	    && equation[i2+3].token.constant == denom
 	    && equation[i2+3].level == level + 1
 	    && (i2 + 4 >= n || equation[i2+4].level <= level))
 		return equation[i2+1].token.constant;
 	return 0.0;
-}
-
-/*
- * Return true if the exponent of the power operator at token index i2 (level "level")
- * is exactly the fraction group 1/d as produced by make_fractions_and_group().
- */
-static int
-code_frac_power (token_type *equation, int n, int i2, int level, double d)
-{
-	return (i2 + 3 < n
-	    && equation[i2+1].kind == CONSTANT
-	    && equation[i2+1].token.constant == 1.0
-	    && equation[i2+1].level == level + 1
-	    && equation[i2+2].kind == OPERATOR
-	    && equation[i2+2].token.operatr == DIVIDE
-	    && equation[i2+2].level == level + 1
-	    && equation[i2+3].kind == CONSTANT
-	    && equation[i2+3].token.constant == d
-	    && equation[i2+3].level == level + 1
-	    && (i2 + 4 >= n || equation[i2+4].level <= level));
 }
 
 /*
@@ -971,16 +951,64 @@ list_code (
 								equation[i2].token.operatr = TIMES;
 								equation[i2+1] = equation[i2-1];
 							} else if (!int_flag && (language == C || language == JAVA)
-							    && code_frac_power(equation, *np, i2, cur_level, 3.0)
-							    && repl_n < 8) {
-/* Emit the real cube root; pow() returns NaN for negative bases, Mathomatic computes the real root. */
-								APPEND(language == C ? "cbrt" : "Math.cbrt");
-								repl_idx[repl_n] = i2;
-								repl_str[repl_n] = "";
-								repl_skip[repl_n] = 3;	/* skip the 1/3 fraction group */
-								repl_n++;
+							    && equation[i2+1].level == cur_level
+							    && equation[i2+1].kind == CONSTANT
+							    && (equation[i2+1].token.constant == 3.0
+							        || equation[i2+1].token.constant == 4.0)) {
+/* Expand small constant integer powers into multiplication; pow() is slower and no more exact. */
+								char	*u_string, *composed;
+								size_t	size;
+
+								u_string = code_span_string(&equation[i], i2 - i, language, int_flag);
+								if (u_string) {
+									size = 4 * strlen(u_string) + 8;
+									composed = (char *) malloc(size);
+									if (composed) {
+										if (equation[i2+1].token.constant == 3.0) {
+											snprintf(composed, size, "(%s*%s*%s)", u_string, u_string, u_string);
+										} else {
+											snprintf(composed, size, "(%s*%s*%s*%s)", u_string, u_string, u_string, u_string);
+										}
+										APPEND(composed);
+										free(composed);
+										compose_end = i2 + 2;
+									}
+									free(u_string);
+								}
 							} else if (!int_flag && (language == C || language == JAVA)
-							    && (d = code_half_power(equation, *np, i2, cur_level)) > 0.0
+							    && (d = code_num_over(equation, *np, i2, cur_level, 3.0)) > 0.0
+							    && fmod(d, 3.0) != 0.0) {
+/* Emit real cube roots; pow() returns NaN for negative bases, Mathomatic computes the real root. */
+								if (d == 1.0 && repl_n < 8) {
+									APPEND(language == C ? "cbrt" : "Math.cbrt");
+									repl_idx[repl_n] = i2;
+									repl_str[repl_n] = "";
+									repl_skip[repl_n] = 3;	/* skip the 1/3 fraction group */
+									repl_n++;
+								} else {
+									char	*u_string, *composed;
+									size_t	size;
+
+									u_string = code_span_string(&equation[i], i2 - i, language, int_flag);
+									if (u_string) {
+										size = strlen(u_string) + 64;
+										composed = (char *) malloc(size);
+										if (composed) {
+											if (language == C) {
+												snprintf(composed, size, "pow(cbrt(%s), %.1f)", u_string, d);
+											} else {
+												snprintf(composed, size, "Math.pow(Math.cbrt(%s), %.1f)", u_string, d);
+											}
+											APPEND(composed);
+											free(composed);
+											compose_end = i2 + 4;
+										}
+										free(u_string);
+									}
+								}
+							} else if (!int_flag && (language == C || language == JAVA)
+							    && (d = code_num_over(equation, *np, i2, cur_level, 2.0)) > 0.0
+							    && fmod(d, 2.0) == 1.0
 							    && i2 - 2 > i
 							    && equation[i2-1].kind == CONSTANT
 							    && equation[i2-1].token.constant == 2.0
@@ -1010,18 +1038,26 @@ list_code (
 									}
 									free(u_string);
 								}
+							} else if (!int_flag && (language == C || language == JAVA)
+							    && code_num_over(equation, *np, i2, cur_level, 2.0) == 1.0
+							    && repl_n < 8) {
+/* sqrt() is correctly rounded and faster than pow(x, .5). */
+								APPEND(language == C ? "sqrt" : "Math.sqrt");
+								repl_idx[repl_n] = i2;
+								repl_str[repl_n] = "";
+								repl_skip[repl_n] = 3;	/* skip the 1/2 fraction group */
+								repl_n++;
 							} else {
-								if (!int_flag) {
-									switch (language) {
-									case C:
-										APPEND("pow");
-										break;
-									case JAVA:
-										APPEND("Math.pow");
-										break;
-									default:
-										break;
-									}
+/* Also used for surviving powers in integer mode: the ** operator compiles in neither C nor Java. */
+								switch (language) {
+								case C:
+									APPEND("pow");
+									break;
+								case JAVA:
+									APPEND("Math.pow");
+									break;
+								default:
+									break;
 								}
 							}
 							break;
@@ -1184,10 +1220,10 @@ list_code (
 				cp = MODULUS_STRING;
 				break;
 			case POWER:
-				if (int_flag || language == PYTHON) {
+				if (language == PYTHON) {
 					cp = "**";
 				} else {
-					cp = ", ";
+					cp = ", ";	/* pow() argument separator */
 				}
 				break;
 			case FACTORIAL:

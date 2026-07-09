@@ -64,10 +64,22 @@ check "odd power of absolute value, Java" 'Math.pow(Math.abs(x), 5.0)' \
 	"`run 'y = |x|^5' 'code java'`"
 check "factorial as true gamma" 'tgamma(x + 1.0)' \
 	"`run 'y = x!' 'code c'`"
+check "square root" 'sqrt(x)' \
+	"`run 'y = x^(1/2)' 'code c'`"
+check "square root of expression" 'sqrt((a + x))' \
+	"`run 'y = (a+x)^(1/2)' 'code java'`"
+check "real cube root, general" 'pow(cbrt(x), 2.0)' \
+	"`run 'y = x^(2/3)' 'code c'`"
+check "cube expansion" '(x*x*x)' \
+	"`run 'y = x^3' 'code c'`"
+check "fourth power expansion" '((a + b)*(a + b)*(a + b)*(a + b))' \
+	"`run 'y = (a+b)^4' 'code c'`"
+check "integer mode power uses pow" 'pow(x, n)' \
+	"`run 'y = x^n' 'code integer'`"
 check "fourth root stays pow" 'pow(x, (1.0/4.0))' \
 	"`run 'y = x^(1/4)' 'code c'`"
-check "non-square root stays pow" 'pow((a + x), (1.0/2.0))' \
-	"`run 'y = (a+x)^(1/2)' 'code c'`"
+check "three halves power stays pow" 'pow(x, (3.0/2.0))' \
+	"`run 'y = x^(3/2)' 'code c'`"
 check "complex number warning" 'complex number support' \
 	"`printf '%s\n' 'y = 2*i*x' 'code c' | \"$MATHO\" -q -c 2>&1 | grep -i warning`"
 
@@ -146,6 +158,7 @@ int main(void)
 				}
 			}
 	if (cbrt(-8.0) != -2.0) { puts("FAIL: cbrt"); bad++; }
+	if (pow(cbrt(-8.0), 2.0) != 4.0) { puts("FAIL: cbrt power"); bad++; }
 	if (fabs(tgamma(5.0 + 1.0) - 120.0) > 1e-9) { puts("FAIL: tgamma"); bad++; }
 	if (fabs(-1e200) != 1e200) { puts("FAIL: fabs overflow"); bad++; }
 	if (bad == 0)
