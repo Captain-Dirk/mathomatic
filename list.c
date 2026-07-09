@@ -282,7 +282,7 @@ list1_sub (
 	if (export_flag == 1) {
 		len += fprintf(gfp, ";");
 	}
-#ifdef	_WIN32
+#if	CYGWIN
 	fprintf(gfp, "\r\n");	/* might be redirecting to a Microsoft text file */
 #else
 	fprintf(gfp, "\n");
@@ -1159,7 +1159,7 @@ make_smaller:
 	if (screen_columns && use_screen_columns && width >= screen_columns) {
 		/* output too wide to fit screen, output in single-line format */
 		width = list1_sub(n, false);
-#ifdef	_WIN32
+#if	CYGWIN
 		fprintf(gfp, "\r\n");	/* Be consistent with list1_sub() output. */
 #else
 		fprintf(gfp, "\n");
