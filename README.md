@@ -14,7 +14,8 @@ MSVC/MinGW compatibility, a shared-library build), extends the library API
 so that a host program can capture Mathomatic's output — in particular the
 generated C code — and improves the code generator so that the emitted C
 compiles as-is and matches the engine's semantics exactly (modulus modes,
-real cube roots, absolute values, factorials).
+`sqrt`/`cbrt` and real roots of negative numbers, absolute values,
+factorials, expanded small powers).
 
 ## Why Mathomatic
 
@@ -39,7 +40,7 @@ generate the C expression, paste (or generate) it into your program:
         (4*pi) 3
 
 1-> code c
-r = pow((3.0*v/(4.0*M_PI)), (1.0/3.0));
+r = cbrt((3.0*v/(4.0*M_PI)));
 1-> variables c
 double          v;
 double          r;
@@ -63,13 +64,14 @@ Equation was solved with the quadratic formula.
 
 All solutions verified.
 1-> code c
-x = (((pow(((b*b) + (4.0*a*(y - c))), (1.0/2.0))*sign) - b)/(2.0*a));
+x = (((sqrt(((b*b) + (4.0*a*(y - c))))*sign) - b)/(2.0*a));
 ```
 
 `sign` is Mathomatic's explicit "±": both roots in one expression, and one
 `double sign = 1.0;` (or `-1.0`) away from compiling. Constants like `pi`
-map to `M_PI`, powers to `pow()`; with `code integer`, expressions are
-emitted using integer arithmetic instead.
+map to `M_PI`; roots and powers map to `sqrt`/`cbrt`, plain multiplication,
+or `pow()`, whichever is fastest and most exact; with `code integer`,
+expressions are emitted using integer arithmetic instead.
 
 Simplification and calculus:
 
