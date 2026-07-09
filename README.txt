@@ -1,7 +1,7 @@
 This repo is read-only and for historical reference. The original maintainer
 is now deceased and the project appears to have been dropped.
 
-If you with for this project to continue, please fork the project.
+If you wish for this project to continue, please fork the project.
 
 
                                   Mathomatic
