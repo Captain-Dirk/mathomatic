@@ -1157,7 +1157,7 @@ push_text:
 	if (*cp_start) {
 		add_history(cp_start);
 		last_history_string = NULL;
-		debug_string(0, _("Text string pushed.	Press the UP key to access."));
+		debug_string(0, _("Text string pushed.  Press the UP key to access."));
 		return true;
 	}
 	return false;
@@ -3594,7 +3594,7 @@ variables_cmd (char *cp)
 	}
 	if (vc <= 0) {
 		if (lang_code == 0) {
-			error(_("Expression is numeric.	 No normal variables found."));
+			error(_("Expression is numeric.  No normal variables found."));
 			return false;
 		} else {
 			return true;
