@@ -11,17 +11,12 @@
 extern "C" {
 #endif
 
-#if SHARED_LIB
-# if defined _WIN32
-#  define EXPORT __declspec(dllexport)
-# elif defined(__GNUC__)
-#  define EXPORT __attribute__((visibility("default")))
+#ifndef EXPORT	/* already defined (as dllexport) by includes.h when compiling the library itself */
+# if SHARED_LIB && defined _WIN32
+#  define EXPORT __declspec(dllimport)
 # else
 #  define EXPORT
-#  warning Unknown dynamic link import/export semantics.
 # endif
-#else
-# define EXPORT
 #endif
 
 EXPORT int matho_init(void);				/* one-time Mathomatic initialization */
