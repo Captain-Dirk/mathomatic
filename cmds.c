@@ -3428,6 +3428,14 @@ code_cmd (char *cp)
 					warning(_("This integer expression contains non-integer divides:"));
 				}
 			}
+			if (language != PYTHON) {
+				for (li = 0; li < n_rhs[k]; li++) {
+					if (rhs[k][li].kind == VARIABLE && rhs[k][li].token.variable == IMAGINARY) {
+						warning(_("Complex number code requires complex number support in the target language:"));
+						break;
+					}
+				}
+			}
 #if	LIBRARY
 			free_result_str();
 			result_str = string_code_equation(k, language, int_flag);

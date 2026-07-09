@@ -863,6 +863,28 @@ string_code_equation (
 	return cp;
 }
 
+static char *code_span_string(token_type *p1, int n, enum language_list language, int int_flag);
+
+/*
+ * Return true if the exponent of the power operator at token index i2 (level "level")
+ * is exactly the fraction group 1/d as produced by make_fractions_and_group().
+ */
+static int
+code_frac_power (token_type *equation, int n, int i2, int level, double d)
+{
+	return (i2 + 3 < n
+	    && equation[i2+1].kind == CONSTANT
+	    && equation[i2+1].token.constant == 1.0
+	    && equation[i2+1].level == level + 1
+	    && equation[i2+2].kind == OPERATOR
+	    && equation[i2+2].token.operatr == DIVIDE
+	    && equation[i2+2].level == level + 1
+	    && equation[i2+3].kind == CONSTANT
+	    && equation[i2+3].token.constant == d
+	    && equation[i2+3].level == level + 1
+	    && (i2 + 4 >= n || equation[i2+4].level <= level));
+}
+
 /*
  * Output C, Java, or Python code for an expression.
  * Expression might be modified by this function, though it remains equivalent.
@@ -879,12 +901,18 @@ list_code (
     int int_flag			/* integer arithmetic flag, should work with any language */
 )
 {
-	int	i, j, k, i1, i2;
+	int	i, j, k, i1, i2, e2;
 	int	min1;
 	int	cur_level;
 	char	*cp;
 	char	buf[500], buf2[500];
 	int	len = 0;
+	int	compose_end = 0;	/* if set, the subexpression ending here was output whole by the lookahead */
+/* Operator tokens to print differently, decided by the pattern matching in the lookahead below: */
+	int		repl_idx[8];	/* token index of the operator */
+	char const	*repl_str[8];	/* string to print instead of the operator */
+	char		repl_skip[8];	/* number of following tokens to skip (the operand or a fraction group) */
+	int		repl_n = 0;
 
 	if (string)
 		string[0] = '\0';
@@ -903,6 +931,12 @@ list_code (
 				cur_level++;
 				for (i2 = i + 1; i2 < *np && equation[i2].level >= cur_level; i2 += 2) {
 					if (equation[i2].level == cur_level) {
+						for (e2 = 0; e2 < repl_n; e2++) {
+							if (repl_idx[e2] == i2)
+								break;
+						}
+						if (e2 < repl_n)
+							break;	/* operator already handled by an enclosing pattern below */
 						switch (equation[i2].token.operatr) {
 						case POWER:
 							if (equation[i2-1].level == cur_level
@@ -911,6 +945,35 @@ list_code (
 							    && equation[i2+1].token.constant == 2.0) {
 								equation[i2].token.operatr = TIMES;
 								equation[i2+1] = equation[i2-1];
+							} else if (!int_flag && (language == C || language == JAVA)
+							    && code_frac_power(equation, *np, i2, cur_level, 3.0)
+							    && repl_n < 8) {
+/* Emit the real cube root; pow() returns NaN for negative bases, Mathomatic computes the real root. */
+								APPEND(language == C ? "cbrt" : "Math.cbrt");
+								repl_idx[repl_n] = i2;
+								repl_str[repl_n] = "";
+								repl_skip[repl_n] = 3;	/* skip the 1/3 fraction group */
+								repl_n++;
+							} else if (!int_flag && (language == C || language == JAVA)
+							    && code_frac_power(equation, *np, i2, cur_level, 2.0)
+							    && i2 - 2 > i
+							    && equation[i2-1].kind == CONSTANT
+							    && equation[i2-1].token.constant == 2.0
+							    && equation[i2-1].level == cur_level + 1
+							    && equation[i2-2].kind == OPERATOR
+							    && equation[i2-2].token.operatr == POWER
+							    && equation[i2-2].level == cur_level + 1
+							    && repl_n < 7) {
+/* (x^2)^(1/2) is the absolute value of x; pow(x*x, .5) overflows for large x. */
+								APPEND(language == C ? "fabs" : "Math.abs");
+								repl_idx[repl_n] = i2 - 2;	/* suppress the inner power of 2 */
+								repl_str[repl_n] = "";
+								repl_skip[repl_n] = 1;
+								repl_n++;
+								repl_idx[repl_n] = i2;		/* suppress the outer power of 1/2 */
+								repl_str[repl_n] = "";
+								repl_skip[repl_n] = 3;	/* skip the 1/2 fraction group */
+								repl_n++;
 							} else {
 								if (!int_flag) {
 									switch (language) {
@@ -927,14 +990,103 @@ list_code (
 							}
 							break;
 						case FACTORIAL:
-							APPEND("factorial");
+							if (!int_flag && language == C && repl_n < 8) {
+/* C has no factorial(); the true gamma function computes the same values. */
+								APPEND("tgamma");
+								repl_idx[repl_n] = i2;
+								repl_str[repl_n] = " + 1.0";
+								repl_skip[repl_n] = 1;
+								repl_n++;
+							} else {
+								APPEND("factorial");
+							}
 							break;
+						case MODULUS: {
+/* Mathomatic's modulus follows modulus_mode; the %% operator of C and Java (and C's fmod())
+   truncates like modulus_mode 0, so emit an exact conditionally adjusted form for modes 1 and 2.
+   That form evaluates the operands more than once, which is safe because
+   generated expressions have no side effects. */
+							char		*a_string, *b_string, *r_string, *composed;
+							char const	*absfunc;
+							size_t		size;
+
+							if (language == PYTHON) {
+								if (modulus_mode != 1 && (outflag || string))
+									warning(_("Python modulus is like modulus_mode 1; results differ for some negative operands."));
+								break;
+							}
+							if (modulus_mode == 0) {
+								if (!int_flag && language == C && repl_n < 8) {
+/* The %% operator does not compile for C doubles; fmod() truncates exactly like mode 0. */
+									APPEND("fmod");
+									repl_idx[repl_n] = i2;
+									repl_str[repl_n] = ", ";
+									repl_skip[repl_n] = 0;
+									repl_n++;
+								}
+								break;
+							}
+							for (e2 = i2 + 2; e2 < *np && equation[e2].level > cur_level; e2++)
+								;
+							a_string = code_span_string(&equation[i], i2 - i, language, int_flag);
+							b_string = code_span_string(&equation[i2+1], e2 - (i2 + 1), language, int_flag);
+							r_string = NULL;
+							if (a_string && b_string) {
+								size = strlen(a_string) + strlen(b_string) + 16;
+								r_string = (char *) malloc(size);
+								if (r_string) {
+									if (!int_flag && language == C) {
+										snprintf(r_string, size, "fmod(%s, %s)", a_string, b_string);
+									} else {
+										snprintf(r_string, size, "(%s %% %s)", a_string, b_string);
+									}
+								}
+							}
+							if (r_string) {
+								if (language == C)
+									absfunc = int_flag ? "labs" : "fabs";
+								else
+									absfunc = "Math.abs";
+								size = 4 * strlen(r_string) + 2 * strlen(b_string) + 64;
+								composed = (char *) malloc(size);
+								if (composed) {
+									if (modulus_mode == 2) {
+										/* result always positive or zero */
+										snprintf(composed, size, "(%s < 0 ? %s + %s(%s) : %s)",
+										    r_string, r_string, absfunc, b_string, r_string);
+									} else {
+										/* result sign of divisor */
+										snprintf(composed, size, "(%s != 0 && (%s < 0) != (%s < 0) ? %s + %s : %s)",
+										    r_string, r_string, b_string, r_string, b_string, r_string);
+									}
+									APPEND(composed);
+									free(composed);
+									compose_end = e2;
+								}
+								free(r_string);
+							}
+							if (a_string)
+								free(a_string);
+							if (b_string)
+								free(b_string);
+							break;
+						}
 						}
 						break;
 					}
 				}
+				if (compose_end) {
+					/* the whole subexpression was already output above */
+					cur_level--;
+					break;
+				}
 				APPEND("(");
 			}
+		}
+		if (compose_end) {
+			i = compose_end - 1;	/* continue after the subexpression */
+			compose_end = 0;
+			continue;
 		}
 		switch (equation[i].kind) {
 		case CONSTANT:
@@ -964,6 +1116,15 @@ list_code (
 			}
 			break;
 		case OPERATOR:
+			for (i1 = 0; i1 < repl_n; i1++) {
+				if (repl_idx[i1] == i)
+					break;
+			}
+			if (i1 < repl_n) {
+				APPEND(repl_str[i1]);
+				i += repl_skip[i1];
+				break;
+			}
 			cp = _("(unknown operator)");
 			switch (equation[i].token.operatr) {
 			case PLUS:
@@ -1006,6 +1167,28 @@ list_code (
 		APPEND(")");
 	}
 	return len;
+}
+
+/*
+ * Render a subexpression to a malloc()ed code string by calling list_code() twice.
+ * Used to duplicate the divisor operand when emitting modulus adjustment code.
+ *
+ * Return NULL if not enough memory.
+ */
+static char *
+code_span_string (token_type *p1, int n, enum language_list language, int int_flag)
+{
+	int	len, n2;
+	char	*s;
+
+	n2 = n;
+	len = list_code(p1, &n2, false, NULL, language, int_flag);
+	s = (char *) malloc(len + 2);
+	if (s) {
+		n2 = n;
+		list_code(p1, &n2, false, s, language, int_flag);
+	}
+	return s;
 }
 
 /* global variables for the flist functions below */
