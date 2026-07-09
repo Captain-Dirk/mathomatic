@@ -54,8 +54,14 @@ check "real cube root" 'cbrt(x)' \
 	"`run 'y = x^(1/3)' 'code c'`"
 check "real cube root, Java" 'Math.cbrt(x)' \
 	"`run 'y = x^(1/3)' 'code java'`"
-check "absolute value" 'fabs((x))' \
+check "absolute value" 'fabs(x)' \
 	"`run 'y = |x|' 'code c'`"
+check "absolute value of expression" 'fabs((a + b))' \
+	"`run 'y = |a+b|' 'code c'`"
+check "odd power of absolute value" 'pow(fabs(x), 3.0)' \
+	"`run 'y = |x|^3' 'code c'`"
+check "odd power of absolute value, Java" 'Math.pow(Math.abs(x), 5.0)' \
+	"`run 'y = |x|^5' 'code java'`"
 check "factorial as true gamma" 'tgamma(x + 1.0)' \
 	"`run 'y = x!' 'code c'`"
 check "fourth root stays pow" 'pow(x, (1.0/4.0))' \

@@ -866,6 +866,30 @@ string_code_equation (
 static char *code_span_string(token_type *p1, int n, enum language_list language, int int_flag);
 
 /*
+ * If the exponent of the power operator at token index i2 (level "level") is exactly
+ * a fraction group n/2 with positive odd integer n, as produced by make_fractions_and_group(),
+ * return n, otherwise return 0.
+ */
+static double
+code_half_power (token_type *equation, int n, int i2, int level)
+{
+	if (i2 + 3 < n
+	    && equation[i2+1].kind == CONSTANT
+	    && equation[i2+1].token.constant > 0.0
+	    && fmod(equation[i2+1].token.constant, 2.0) == 1.0
+	    && equation[i2+1].level == level + 1
+	    && equation[i2+2].kind == OPERATOR
+	    && equation[i2+2].token.operatr == DIVIDE
+	    && equation[i2+2].level == level + 1
+	    && equation[i2+3].kind == CONSTANT
+	    && equation[i2+3].token.constant == 2.0
+	    && equation[i2+3].level == level + 1
+	    && (i2 + 4 >= n || equation[i2+4].level <= level))
+		return equation[i2+1].token.constant;
+	return 0.0;
+}
+
+/*
  * Return true if the exponent of the power operator at token index i2 (level "level")
  * is exactly the fraction group 1/d as produced by make_fractions_and_group().
  */
@@ -907,6 +931,7 @@ list_code (
 	char	*cp;
 	char	buf[500], buf2[500];
 	int	len = 0;
+	double	d;
 	int	compose_end = 0;	/* if set, the subexpression ending here was output whole by the lookahead */
 /* Operator tokens to print differently, decided by the pattern matching in the lookahead below: */
 	int		repl_idx[8];	/* token index of the operator */
@@ -955,25 +980,36 @@ list_code (
 								repl_skip[repl_n] = 3;	/* skip the 1/3 fraction group */
 								repl_n++;
 							} else if (!int_flag && (language == C || language == JAVA)
-							    && code_frac_power(equation, *np, i2, cur_level, 2.0)
+							    && (d = code_half_power(equation, *np, i2, cur_level)) > 0.0
 							    && i2 - 2 > i
 							    && equation[i2-1].kind == CONSTANT
 							    && equation[i2-1].token.constant == 2.0
 							    && equation[i2-1].level == cur_level + 1
 							    && equation[i2-2].kind == OPERATOR
 							    && equation[i2-2].token.operatr == POWER
-							    && equation[i2-2].level == cur_level + 1
-							    && repl_n < 7) {
-/* (x^2)^(1/2) is the absolute value of x; pow(x*x, .5) overflows for large x. */
-								APPEND(language == C ? "fabs" : "Math.abs");
-								repl_idx[repl_n] = i2 - 2;	/* suppress the inner power of 2 */
-								repl_str[repl_n] = "";
-								repl_skip[repl_n] = 1;
-								repl_n++;
-								repl_idx[repl_n] = i2;		/* suppress the outer power of 1/2 */
-								repl_str[repl_n] = "";
-								repl_skip[repl_n] = 3;	/* skip the 1/2 fraction group */
-								repl_n++;
+							    && equation[i2-2].level == cur_level + 1) {
+/* (u^2)^(n/2) with odd n is the absolute value |u|^n; pow(u*u, n/2) overflows for large u. */
+								char	*u_string, *composed;
+								size_t	size;
+
+								u_string = code_span_string(&equation[i], i2 - 2 - i, language, int_flag);
+								if (u_string) {
+									size = strlen(u_string) + 64;
+									composed = (char *) malloc(size);
+									if (composed) {
+										if (d == 1.0) {
+											snprintf(composed, size, language == C ? "fabs(%s)" : "Math.abs(%s)", u_string);
+										} else if (language == C) {
+											snprintf(composed, size, "pow(fabs(%s), %.1f)", u_string, d);
+										} else {
+											snprintf(composed, size, "Math.pow(Math.abs(%s), %.1f)", u_string, d);
+										}
+										APPEND(composed);
+										free(composed);
+										compose_end = i2 + 4;	/* the whole (u^2)^(n/2) subexpression is done */
+									}
+									free(u_string);
+								}
 							} else {
 								if (!int_flag) {
 									switch (language) {
