@@ -41,8 +41,10 @@ EXPORT FILE *
 matho_outfile (FILE *fp)
 {
 	FILE *old = gfp;
-	default_out = fp;
-	gfp = default_out;
+	if (fp) {
+		default_out = fp;
+		gfp = default_out;
+	}
 	return old;
 }
 
